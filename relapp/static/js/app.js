@@ -86,17 +86,14 @@ function conectarEventosDeLaInterfaz() {
   // Conecta el boton Crear con la creacion de una matriz vacia.
   buscarElemento("#buildMatrixBtn").addEventListener("click", crearMatrizDesdeTamano);
 
-  // Conecta el boton Aplicar con el cambio de etiquetas.
-  buscarElemento("#applyLabelsBtn").addEventListener("click", aplicarEtiquetas);
-
-  // Permite aplicar etiquetas presionando Enter.
-  buscarElemento("#labelsInput").addEventListener("keydown", manejarEnterEnEtiquetas);
-
   // Conecta el boton para ir al cuadro de matriz.
   buscarElemento("#goMatrixBtn").addEventListener("click", enfocarEditorDeMatriz);
 
   // Conecta el boton de generacion aleatoria.
   buscarElemento("#randomMatrixBtn").addEventListener("click", generarMatrizAleatoria);
+
+  // Conecta el boton de ejemplos por propiedad u orden.
+  buscarElemento("#exampleMatrixBtn").addEventListener("click", generarMatrizDeEjemploSeleccionada);
 
   // Conecta el boton para cargar texto pegado.
   buscarElemento("#pasteMatrixBtn").addEventListener("click", cargarMatrizPegada);
@@ -122,14 +119,17 @@ function crearMatrizDesdeTamano() {
   // Lee y valida el tamano n.
   const tamano = leerTamano();
 
-  // Prepara etiquetas para el nuevo tamano.
-  const etiquetas = obtenerEtiquetasParaTamano(tamano);
+  // Crea etiquetas automaticas para filas y columnas.
+  const etiquetas = crearEtiquetasAutomaticas(tamano);
 
   // Crea una matriz llena de ceros.
   const matrizVacia = crearMatrizVacia(tamano);
 
   // Actualiza el estado con la nueva matriz.
   cambiarMatrizActual(matrizVacia, etiquetas, "MR vacia creada para ingreso por pantalla");
+
+  // Marca el modo manual como activo.
+  marcarModoDeEntrada("manual");
 
   // Mueve la pantalla al cuadro editable.
   enfocarEditorDeMatriz();
@@ -146,10 +146,10 @@ function leerTamano() {
   // Convierte el texto del campo en numero entero.
   const tamano = Number.parseInt(buscarElemento("#sizeInput").value, 10);
 
-  // Valida que n sea un entero entre 1 y 50.
-  if (!Number.isInteger(tamano) || tamano < 1 || tamano > 50) {
+  // Valida que n sea un entero positivo.
+  if (!Number.isInteger(tamano) || tamano < 1) {
     // Muestra error cuando n no es valido.
-    mostrarAviso("Ingrese un tamano n valido entre 1 y 50.", "danger");
+    mostrarAviso("Ingrese un tamano n valido. Debe ser un numero entero mayor o igual a 1.", "danger");
 
     // Devuelve el tamano actual para no romper la interfaz.
     return estadoAplicacion.matriz.length;
@@ -159,100 +159,10 @@ function leerTamano() {
   return tamano;
 }
 
-// Obtiene etiquetas validas para un tamano concreto.
-function obtenerEtiquetasParaTamano(tamano) {
-  // Intenta usar las etiquetas escritas por el usuario.
-  try {
-    // Devuelve etiquetas si coinciden con el tamano.
-    return leerEtiquetasDesdeCampo(tamano);
-  } catch {
-    // Crea etiquetas numericas si las escritas no sirven.
-    const etiquetasPorDefecto = crearEtiquetasNumericas(tamano);
-
-    // Escribe las etiquetas por defecto en el campo.
-    buscarElemento("#labelsInput").value = etiquetasPorDefecto.join(",");
-
-    // Devuelve las etiquetas por defecto.
-    return etiquetasPorDefecto;
-  }
-}
-
-// Crea etiquetas 1,2,3,...,n.
-function crearEtiquetasNumericas(tamano) {
+// Crea etiquetas automaticas 1,2,3,...,n.
+function crearEtiquetasAutomaticas(tamano) {
   // Construye una lista con tantos elementos como indique n.
   return Array.from({ length: tamano }, (_, indice) => String(indice + 1));
-}
-
-// Lee las etiquetas escritas por el usuario y las valida.
-function leerEtiquetasDesdeCampo(tamano) {
-  // Obtiene el texto completo del campo de etiquetas.
-  const texto = buscarElemento("#labelsInput").value.trim();
-
-  // Separa el texto por comas.
-  const etiquetas = texto.split(",").map((valor) => valor.trim()).filter(Boolean);
-
-  // Si no hay etiquetas, usa etiquetas numericas.
-  if (etiquetas.length === 0) {
-    // Devuelve etiquetas por defecto.
-    return crearEtiquetasNumericas(tamano);
-  }
-
-  // Verifica que la cantidad de etiquetas sea igual a n.
-  if (etiquetas.length !== tamano) {
-    // Lanza error si sobran o faltan etiquetas.
-    throw new Error(`Debe escribir exactamente ${tamano} elementos separados por coma.`);
-  }
-
-  // Verifica que no existan etiquetas repetidas.
-  if (new Set(etiquetas).size !== etiquetas.length) {
-    // Lanza error si hay elementos repetidos.
-    throw new Error("Los elementos no pueden repetirse.");
-  }
-
-  // Verifica que ninguna etiqueta sea demasiado larga.
-  if (etiquetas.some((etiqueta) => etiqueta.length > 20)) {
-    // Lanza error si una etiqueta supera el limite.
-    throw new Error("Cada elemento debe tener maximo 20 caracteres.");
-  }
-
-  // Devuelve etiquetas limpias y validadas.
-  return etiquetas;
-}
-
-// Aplica las etiquetas escritas por el usuario.
-function aplicarEtiquetas() {
-  // Intenta leer y validar las etiquetas.
-  try {
-    // Reemplaza las etiquetas actuales.
-    estadoAplicacion.etiquetas = leerEtiquetasDesdeCampo(estadoAplicacion.matriz.length);
-
-    // Actualiza la descripcion del origen.
-    estadoAplicacion.origenMatriz = "MR con nombres de elementos actualizados";
-
-    // Dibuja otra vez la matriz con encabezados nuevos.
-    dibujarMatrizEditable();
-
-    // Analiza otra vez para actualizar R con los nuevos nombres.
-    analizarTodo();
-
-    // Informa que el cambio fue aplicado.
-    mostrarAviso(`Elementos aplicados: A = {${estadoAplicacion.etiquetas.join(", ")}}`, "success");
-  } catch (error) {
-    // Muestra el error de etiquetas.
-    mostrarAviso(error.message, "warning");
-  }
-}
-
-// Detecta Enter en el campo de etiquetas.
-function manejarEnterEnEtiquetas(evento) {
-  // Revisa si la tecla fue Enter.
-  if (evento.key === "Enter") {
-    // Evita que el formulario haga otra accion.
-    evento.preventDefault();
-
-    // Aplica las etiquetas.
-    aplicarEtiquetas();
-  }
 }
 
 // Crea una matriz cuadrada llena de ceros.
@@ -287,22 +197,16 @@ function sincronizarCamposDeEntrada() {
   // Actualiza el campo de tamano.
   buscarElemento("#sizeInput").value = estadoAplicacion.matriz.length;
 
-  // Actualiza el campo de etiquetas.
-  buscarElemento("#labelsInput").value = estadoAplicacion.etiquetas.join(",");
-
-  // Actualiza el resumen de tamano.
+  // Actualiza el texto de tamano.
   buscarElemento("#matrixMeta").textContent = `${estadoAplicacion.matriz.length} x ${estadoAplicacion.matriz.length}, binaria y cuadrada`;
 
-  // Actualiza el conjunto A visible.
-  buscarElemento("#labelsStatus").textContent = `A = {${estadoAplicacion.etiquetas.join(", ")}}`;
-
   // Actualiza el origen de la matriz.
-  buscarElemento("#currentInputSummary").textContent = `${estadoAplicacion.origenMatriz} sobre A = {${estadoAplicacion.etiquetas.join(", ")}}`;
+  buscarElemento("#currentInputSummary").textContent = `${estadoAplicacion.origenMatriz}. Filas y columnas: ${estadoAplicacion.etiquetas.join(", ")}`;
 
-  // Actualiza la matriz visible en texto.
+  // Actualiza la matriz visible en texto completa.
   buscarElemento("#matrixTextOutput").textContent = convertirMatrizATexto(estadoAplicacion.matriz);
 
-  // Actualiza el cuadro opcional de pegado.
+  // Actualiza el cuadro opcional de pegado completo.
   buscarElemento("#pasteMatrix").value = convertirMatrizATexto(estadoAplicacion.matriz);
 }
 
@@ -443,6 +347,9 @@ function cambiarValorDeCelda(indiceFila, indiceColumna) {
   // Registra de donde viene el cambio.
   estadoAplicacion.origenMatriz = `MR editada por pantalla en (${estadoAplicacion.etiquetas[indiceFila]}, ${estadoAplicacion.etiquetas[indiceColumna]})`;
 
+  // Marca el modo manual como activo.
+  marcarModoDeEntrada("manual");
+
   // Dibuja nuevamente la tabla.
   dibujarMatrizEditable();
 
@@ -457,8 +364,8 @@ function cargarMatrizPegada() {
     // Convierte el texto pegado en matriz.
     const matriz = convertirTextoAMatriz(buscarElemento("#pasteMatrix").value);
 
-    // Crea etiquetas numericas para el nuevo tamano.
-    const etiquetas = crearEtiquetasNumericas(matriz.length);
+    // Crea etiquetas automaticas para el nuevo tamano.
+    const etiquetas = crearEtiquetasAutomaticas(matriz.length);
 
     // Reemplaza la matriz actual.
     cambiarMatrizActual(matriz, etiquetas, "MR ingresada por teclado");
@@ -535,6 +442,9 @@ async function generarMatrizAleatoria() {
     // Reemplaza la matriz actual con la aleatoria.
     cambiarMatrizActual(respuesta.matrix, respuesta.labels, "MR generada aleatoriamente por el sistema");
 
+    // Marca el modo aleatorio como activo.
+    marcarModoDeEntrada("aleatoria");
+
     // Analiza la matriz generada.
     await analizarTodo();
 
@@ -549,6 +459,140 @@ async function generarMatrizAleatoria() {
   }
 }
 
+// Genera una matriz de ejemplo segun la opcion elegida.
+function generarMatrizDeEjemploSeleccionada() {
+  // Lee el tamano actual.
+  const tamano = leerTamano();
+
+  // Lee el tipo de ejemplo elegido.
+  const tipoEjemplo = buscarElemento("#exampleTypeSelect").value;
+
+  // Crea la matriz de ejemplo.
+  const matrizEjemplo = crearMatrizDeEjemplo(tipoEjemplo, tamano);
+
+  // Crea etiquetas automaticas.
+  const etiquetas = crearEtiquetasAutomaticas(tamano);
+
+  // Cambia la matriz actual.
+  cambiarMatrizActual(matrizEjemplo, etiquetas, `MR de ejemplo para ${obtenerNombreDeEjemplo(tipoEjemplo)}`);
+
+  // Marca el modo ejemplo como activo.
+  marcarModoDeEntrada("ejemplo");
+
+  // Analiza el ejemplo.
+  analizarTodo();
+
+  // Muestra aviso claro.
+  mostrarAviso(`Matriz de ejemplo generada: ${obtenerNombreDeEjemplo(tipoEjemplo)}.`, "success");
+}
+
+// Crea una matriz que cumple una propiedad u orden elegido.
+function crearMatrizDeEjemplo(tipoEjemplo, tamano) {
+  // Usa matriz vacia para irreflexiva.
+  if (tipoEjemplo === "irreflexive") {
+    return crearMatrizVacia(tamano);
+  }
+
+  // Usa matriz identidad para reflexiva y equivalencia.
+  if (tipoEjemplo === "reflexive" || tipoEjemplo === "equivalence") {
+    return crearMatrizIdentidad(tamano);
+  }
+
+  // Usa matriz completa para simetrica.
+  if (tipoEjemplo === "symmetric") {
+    return crearMatrizCompleta(tamano);
+  }
+
+  // Usa relacion menor que para asimetrica y orden estricto.
+  if (tipoEjemplo === "asymmetric" || tipoEjemplo === "strict_order") {
+    return crearMatrizMenorQue(tamano);
+  }
+
+  // Usa relacion menor o igual para antisimetrica, transitiva y orden total.
+  if (tipoEjemplo === "antisymmetric" || tipoEjemplo === "transitive" || tipoEjemplo === "total_order") {
+    return crearMatrizMenorOIgual(tamano);
+  }
+
+  // Usa divisibilidad para un orden parcial no necesariamente total.
+  if (tipoEjemplo === "partial_order") {
+    return crearMatrizDivisibilidad(tamano);
+  }
+
+  // Devuelve matriz vacia si llega una opcion desconocida.
+  return crearMatrizVacia(tamano);
+}
+
+// Crea una matriz con unos en la diagonal.
+function crearMatrizIdentidad(tamano) {
+  // Recorre filas y columnas.
+  return Array.from({ length: tamano }, (_, fila) => {
+    // Coloca 1 solo cuando fila y columna son iguales.
+    return Array.from({ length: tamano }, (_, columna) => (fila === columna ? 1 : 0));
+  });
+}
+
+// Crea una matriz llena de unos.
+function crearMatrizCompleta(tamano) {
+  // Todas las posiciones pertenecen a la relacion.
+  return Array.from({ length: tamano }, () => Array.from({ length: tamano }, () => 1));
+}
+
+// Crea la relacion menor que sobre 1,2,3,...,n.
+function crearMatrizMenorQue(tamano) {
+  // Marca 1 cuando la fila es menor que la columna.
+  return Array.from({ length: tamano }, (_, fila) => {
+    // Compara indices para simular menor que.
+    return Array.from({ length: tamano }, (_, columna) => (fila < columna ? 1 : 0));
+  });
+}
+
+// Crea la relacion menor o igual sobre 1,2,3,...,n.
+function crearMatrizMenorOIgual(tamano) {
+  // Marca 1 cuando la fila es menor o igual que la columna.
+  return Array.from({ length: tamano }, (_, fila) => {
+    // Compara indices para simular menor o igual.
+    return Array.from({ length: tamano }, (_, columna) => (fila <= columna ? 1 : 0));
+  });
+}
+
+// Crea la relacion de divisibilidad sobre 1,2,3,...,n.
+function crearMatrizDivisibilidad(tamano) {
+  // Marca 1 cuando el numero de la fila divide al numero de la columna.
+  return Array.from({ length: tamano }, (_, fila) => {
+    // Convierte indice de fila en numero natural.
+    const numeroFila = fila + 1;
+
+    // Evalua cada columna.
+    return Array.from({ length: tamano }, (_, columna) => {
+      // Convierte indice de columna en numero natural.
+      const numeroColumna = columna + 1;
+
+      // Devuelve 1 si divide exacto.
+      return numeroColumna % numeroFila === 0 ? 1 : 0;
+    });
+  });
+}
+
+// Devuelve el nombre visible del ejemplo.
+function obtenerNombreDeEjemplo(tipoEjemplo) {
+  // Define nombres entendibles para el usuario.
+  const nombres = {
+    reflexive: "Reflexiva",
+    irreflexive: "Irreflexiva",
+    symmetric: "Simetrica",
+    asymmetric: "Asimetrica",
+    antisymmetric: "Antisimetrica",
+    transitive: "Transitiva",
+    equivalence: "Equivalencia",
+    partial_order: "Orden parcial",
+    total_order: "Orden total",
+    strict_order: "Orden estricto",
+  };
+
+  // Devuelve el nombre encontrado o el codigo original.
+  return nombres[tipoEjemplo] || tipoEjemplo;
+}
+
 // Limpia la matriz actual dejandola en ceros.
 function limpiarMatriz() {
   // Crea matriz vacia del mismo tamano.
@@ -556,6 +600,9 @@ function limpiarMatriz() {
 
   // Reemplaza la matriz actual.
   cambiarMatrizActual(matrizVacia, estadoAplicacion.etiquetas, "MR limpiada para ingreso por pantalla");
+
+  // Marca el modo manual como activo.
+  marcarModoDeEntrada("manual");
 
   // Analiza la matriz vacia.
   analizarTodo();
@@ -589,8 +636,6 @@ async function analizarTodo() {
     // Limpia mensajes anteriores.
     limpiarAviso();
 
-    // Advierte si el grafo puede saturarse.
-    mostrarAdvertenciaSiLaMatrizEsGrande(reporte.n);
   } catch (error) {
     // Muestra errores de validacion o API.
     mostrarAviso(error.message, "danger");
@@ -669,7 +714,7 @@ function mostrarReporteCompleto(reporte) {
   dibujarGrafo(reporte.graph);
 
   // Muestra cantidad de nodos y aristas.
-  buscarElemento("#graphMeta").textContent = `${reporte.graph.nodes.length} nodos, ${reporte.graph.edges.length} aristas`;
+  buscarElemento("#graphMeta").textContent = `${reporte.graph.node_count ?? reporte.graph.nodes.length} nodos, ${reporte.graph.edge_count ?? reporte.graph.edges.length} aristas`;
 }
 
 // Muestra la relacion R como pares ordenados.
@@ -684,12 +729,12 @@ function mostrarRelacion(relacion) {
   buscarElemento("#relationCount").textContent = `${relacion.length} pares`;
 }
 
-// Muestra todas las propiedades.
+// Muestra todas las propiedades solicitadas.
 function mostrarPropiedades(propiedades) {
   // Limpia estado de propiedad individual.
   buscarElemento("#singleCheckStatus").textContent = "";
 
-  // Crea una tarjeta por propiedad.
+  // Crea una tarjeta por cada propiedad.
   const tarjetas = Object.entries(propiedades).map(([clave, resultado]) => {
     // Devuelve tarjeta con nombre visible.
     return crearTarjetaResultado(nombresPropiedades[clave] || clave, resultado);
@@ -699,9 +744,9 @@ function mostrarPropiedades(propiedades) {
   buscarElemento("#propertiesOutput").replaceChildren(...tarjetas);
 }
 
-// Muestra equivalencia, orden parcial, orden total y orden estricto.
+// Muestra todas las clasificaciones solicitadas.
 function mostrarClasificaciones(clasificaciones) {
-  // Crea una tarjeta por clasificacion.
+  // Crea una tarjeta por cada clasificacion.
   const tarjetas = Object.entries(clasificaciones).map(([clave, resultado]) => {
     // Devuelve tarjeta con nombre visible.
     return crearTarjetaResultado(nombresClasificaciones[clave] || clave, resultado);
@@ -731,8 +776,8 @@ function crearTarjetaResultado(titulo, resultado) {
   // Agrega encabezado y mensaje.
   tarjeta.append(encabezado, mensaje);
 
-  // Agrega contraejemplo si existe.
-  agregarContraejemploSiExiste(tarjeta, resultado);
+  // Agrega caso que falla si existe.
+  agregarCasoQueFallaSiExiste(tarjeta, resultado);
 
   // Devuelve la tarjeta terminada.
   return tarjeta;
@@ -765,13 +810,13 @@ function crearEncabezadoDeTarjeta(titulo, cumple) {
   return encabezado;
 }
 
-// Agrega contraejemplo a la tarjeta si el resultado lo trae.
-function agregarContraejemploSiExiste(tarjeta, resultado) {
-  // Busca contraejemplo directo o de comparabilidad.
-  const contraejemplo = resultado.witness || resultado.comparability?.witness;
+// Agrega el caso que falla si el resultado lo trae.
+function agregarCasoQueFallaSiExiste(tarjeta, resultado) {
+  // Busca caso directo o de comparabilidad.
+  const casoQueFalla = resultado.witness || resultado.comparability?.witness;
 
-  // Sale si no hay contraejemplo.
-  if (!contraejemplo) {
+  // Sale si no hay caso que falla.
+  if (!casoQueFalla) {
     return;
   }
 
@@ -781,11 +826,22 @@ function agregarContraejemploSiExiste(tarjeta, resultado) {
   // Asigna clase visual.
   codigo.className = "witness";
 
-  // Escribe el contraejemplo.
-  codigo.textContent = `Contraejemplo: ${JSON.stringify(contraejemplo)}`;
+  // Escribe el caso que falla en lenguaje sencillo.
+  codigo.textContent = `Caso que falla: ${formatearCasoQueFalla(casoQueFalla)}`;
 
-  // Agrega el contraejemplo a la tarjeta.
+  // Agrega el caso a la tarjeta.
   tarjeta.appendChild(codigo);
+}
+
+// Convierte el caso que falla en texto mas legible.
+function formatearCasoQueFalla(casoQueFalla) {
+  // Formatea objetos especiales de simetria o transitividad.
+  if (casoQueFalla.present && casoQueFalla.missing) {
+    return `existe ${JSON.stringify(casoQueFalla.present)}, pero falta ${JSON.stringify(casoQueFalla.missing)}`;
+  }
+
+  // Formatea listas simples.
+  return JSON.stringify(casoQueFalla);
 }
 
 // Dibuja el grafo dirigido con Cytoscape.js.
@@ -802,17 +858,14 @@ function dibujarGrafo(datosGrafo) {
     return;
   }
 
-  // Evita renderizar grafos demasiado grandes.
-  if (datosGrafo.nodes.length > 50) {
-    // Muestra mensaje de omision.
-    contenedor.replaceChildren(crearMensajeDeGrafo("Analisis realizado. Grafo omitido por tamano."));
-
-    // Sale de la funcion.
-    return;
-  }
-
   // Elimina grafo anterior si existe.
   destruirGrafoAnterior();
+
+  // Limpia cualquier mensaje o contenido anterior.
+  contenedor.replaceChildren();
+
+  // Une todos los nodos y todas las aristas sin quitar ninguna.
+  const elementosDelGrafo = [...datosGrafo.nodes, ...datosGrafo.edges];
 
   // Crea el nuevo grafo.
   estadoAplicacion.grafoActual = cytoscape({
@@ -820,13 +873,26 @@ function dibujarGrafo(datosGrafo) {
     container: contenedor,
 
     // Une nodos y aristas.
-    elements: [...datosGrafo.nodes, ...datosGrafo.edges],
+    elements: elementosDelGrafo,
 
     // Organiza los nodos en circulo.
-    layout: { name: "circle", padding: 36 },
+    layout: { name: "circle", padding: 48, animate: false },
 
     // Define estilos visuales.
     style: crearEstilosDelGrafo(),
+
+    // Mejora el rendimiento al mover o cargar grafos densos.
+    textureOnViewport: true,
+    hideEdgesOnViewport: false,
+    hideLabelsOnViewport: true,
+    motionBlur: false,
+    wheelSensitivity: 0.2,
+  });
+
+  // Fuerza a Cytoscape a recalcular medidas cuando el panel ya esta pintado.
+  requestAnimationFrame(() => {
+    estadoAplicacion.grafoActual.resize();
+    estadoAplicacion.grafoActual.fit(undefined, 36);
   });
 }
 
@@ -865,17 +931,12 @@ function crearEstilosDelGrafo() {
     {
       selector: "edge",
       style: {
-        width: 2,
-        "line-color": "#667085",
-        "target-arrow-color": "#667085",
+        width: 1,
+        "line-color": "#4b5563",
+        "target-arrow-color": "#4b5563",
         "target-arrow-shape": "triangle",
         "curve-style": "bezier",
-        label: "data(label)",
-        "font-size": 9,
-        color: "#344054",
-        "text-background-color": "#ffffff",
-        "text-background-opacity": 0.8,
-        "text-background-padding": 2,
+        opacity: 0.35,
       },
     },
   ];
@@ -949,6 +1010,9 @@ function cambiarEstadoDeProceso(estaProcesando) {
   // Bloquea o desbloquea matriz aleatoria.
   buscarElemento("#randomMatrixBtn").disabled = estaProcesando;
 
+  // Bloquea o desbloquea ejemplo rapido.
+  buscarElemento("#exampleMatrixBtn").disabled = estaProcesando;
+
   // Bloquea o desbloquea propiedades individuales.
   buscarElementos(".property-btn").forEach((boton) => {
     // Aplica el estado disabled.
@@ -970,6 +1034,9 @@ function programarAnalisis() {
 
 // Mueve la pantalla al cuadro editable de la matriz.
 function enfocarEditorDeMatriz() {
+  // Marca el modo manual como activo.
+  marcarModoDeEntrada("manual");
+
   // Busca el panel de matriz.
   const panelMatriz = buscarElemento("#matrixPanel");
 
@@ -986,13 +1053,43 @@ function enfocarEditorDeMatriz() {
   window.setTimeout(() => panelMatriz.classList.remove("flash-panel"), 1400);
 }
 
-// Muestra advertencia si la matriz es grande.
-function mostrarAdvertenciaSiLaMatrizEsGrande(tamano) {
-  // Revisa tamano del grafo.
-  if (tamano > 30) {
-    // Advierte sobre saturacion visual.
-    mostrarAviso("La matriz es valida; el grafo puede verse saturado por su tamano.", "warning");
-  }
+// Cambia el estilo de los botones de entrada.
+function marcarModoDeEntrada(modo) {
+  // Busca el boton de entrada manual.
+  const botonManual = buscarElemento("#goMatrixBtn");
+
+  // Busca el boton de matriz aleatoria.
+  const botonAleatorio = buscarElemento("#randomMatrixBtn");
+
+  // Busca el boton de ejemplos.
+  const botonEjemplo = buscarElemento("#exampleMatrixBtn");
+
+  // Revisa si el modo actual es manual.
+  const modoManualActivo = modo === "manual";
+
+  // Revisa si el modo actual es aleatorio.
+  const modoAleatorioActivo = modo === "aleatoria";
+
+  // Revisa si el modo actual es ejemplo.
+  const modoEjemploActivo = modo === "ejemplo";
+
+  // Pinta manual como activo si corresponde.
+  botonManual.classList.toggle("btn-primary", modoManualActivo);
+
+  // Pinta manual como inactivo si corresponde.
+  botonManual.classList.toggle("btn-outline-primary", !modoManualActivo);
+
+  // Pinta aleatorio como activo si corresponde.
+  botonAleatorio.classList.toggle("btn-primary", modoAleatorioActivo);
+
+  // Pinta aleatorio como inactivo si corresponde.
+  botonAleatorio.classList.toggle("btn-outline-primary", !modoAleatorioActivo);
+
+  // Pinta ejemplo como activo si corresponde.
+  botonEjemplo.classList.toggle("btn-success", modoEjemploActivo);
+
+  // Pinta ejemplo como inactivo si corresponde.
+  botonEjemplo.classList.toggle("btn-outline-success", !modoEjemploActivo);
 }
 
 // Verifica que la API este activa.

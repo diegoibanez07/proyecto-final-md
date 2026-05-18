@@ -16,8 +16,24 @@ NOMBRES_PROPIEDADES = {
     "transitive": "Transitiva",
 }
 
+DEFINICIONES_PROPIEDADES = {
+    "reflexive": "Cada elemento debe relacionarse consigo mismo. En la matriz, toda la diagonal principal debe ser 1.",
+    "irreflexive": "Ningun elemento puede relacionarse consigo mismo. En la matriz, toda la diagonal principal debe ser 0.",
+    "symmetric": "Si aparece un par (a,b), tambien debe aparecer el par inverso (b,a).",
+    "asymmetric": "Si aparece un par (a,b), no puede aparecer (b,a), y tampoco puede haber lazos (a,a).",
+    "antisymmetric": "Dos elementos distintos no pueden relacionarse en ambos sentidos al mismo tiempo.",
+    "transitive": "Si existen (a,b) y (b,c), entonces tambien debe existir (a,c).",
+}
 
-def crear_resultado_positivo(mensaje):
+DEFINICIONES_CLASIFICACIONES = {
+    "equivalence": "Una equivalencia debe ser reflexiva, simetrica y transitiva.",
+    "partial_order": "Un orden parcial debe ser reflexivo, antisimetrico y transitivo.",
+    "total_order": "Un orden total debe ser orden parcial y, ademas, todo par de elementos debe poder compararse.",
+    "strict_order": "Un orden estricto debe ser irreflexivo, asimetrico y transitivo.",
+}
+
+
+def crear_resultado_positivo(mensaje, definicion=None):
     """Crea la respuesta comun cuando una propiedad se cumple."""
     return {
         "value": True,
@@ -27,7 +43,7 @@ def crear_resultado_positivo(mensaje):
     }
 
 
-def crear_resultado_negativo(mensaje, contraejemplo=None, posiciones=None):
+def crear_resultado_negativo(mensaje, contraejemplo=None, posiciones=None, definicion=None, accion_faltante=None):
     """Crea la respuesta comun cuando una propiedad no se cumple."""
     return {
         "value": False,
@@ -67,33 +83,42 @@ def convertir_filas_a_bits(matriz):
 
 def determinar_reflexiva(matriz, etiquetas):
     """Revisa si todos los elementos tienen lazo en la diagonal."""
+    definicion = DEFINICIONES_PROPIEDADES["reflexive"]
+
     for indice, etiqueta in enumerate(etiquetas):
         if matriz[indice][indice] != 1:
             return crear_resultado_negativo(
                 f"No es reflexiva porque falta el lazo ({etiqueta}, {etiqueta}).",
                 [etiqueta, etiqueta],
                 [{"row": indice + 1, "column": indice + 1}],
+                definicion,
+                f"Para que sea reflexiva, cambia a 1 la celda de la fila {etiqueta} y columna {etiqueta}.",
             )
 
-    return crear_resultado_positivo("Es reflexiva porque todos los elementos tienen lazo en la diagonal.")
+    return crear_resultado_positivo("Es reflexiva porque todos los elementos tienen lazo en la diagonal.", definicion)
 
 
 def determinar_irreflexiva(matriz, etiquetas):
     """Revisa si ningun elemento tiene lazo en la diagonal."""
+    definicion = DEFINICIONES_PROPIEDADES["irreflexive"]
+
     for indice, etiqueta in enumerate(etiquetas):
         if matriz[indice][indice] != 0:
             return crear_resultado_negativo(
                 f"No es irreflexiva porque existe el lazo ({etiqueta}, {etiqueta}).",
                 [etiqueta, etiqueta],
                 [{"row": indice + 1, "column": indice + 1}],
+                definicion,
+                f"Para que sea irreflexiva, cambia a 0 la celda de la fila {etiqueta} y columna {etiqueta}.",
             )
 
-    return crear_resultado_positivo("Es irreflexiva porque ningun elemento tiene lazo en la diagonal.")
+    return crear_resultado_positivo("Es irreflexiva porque ningun elemento tiene lazo en la diagonal.", definicion)
 
 
 def determinar_simetrica(matriz, etiquetas):
     """Revisa si cada par tiene su par inverso."""
     tamano = len(matriz)
+    definicion = DEFINICIONES_PROPIEDADES["symmetric"]
 
     for indice_fila in range(tamano):
         for indice_columna in range(indice_fila + 1, tamano):
@@ -117,14 +142,17 @@ def determinar_simetrica(matriz, etiquetas):
                         "missing": [etiquetas[par_faltante[0]], etiquetas[par_faltante[1]]],
                     },
                     [{"row": par_faltante[0] + 1, "column": par_faltante[1] + 1}],
+                    definicion,
+                    f"Para que sea simetrica, agrega el par inverso ({etiquetas[par_faltante[0]]}, {etiquetas[par_faltante[1]]}) o elimina el par que lo causa.",
                 )
 
-    return crear_resultado_positivo("Es simetrica porque todo par tiene tambien su par inverso.")
+    return crear_resultado_positivo("Es simetrica porque todo par tiene tambien su par inverso.", definicion)
 
 
 def determinar_antisimetrica(matriz, etiquetas):
     """Revisa que no existan pares dobles entre elementos distintos."""
     tamano = len(matriz)
+    definicion = DEFINICIONES_PROPIEDADES["antisymmetric"]
 
     for indice_fila in range(tamano):
         for indice_columna in range(indice_fila + 1, tamano):
@@ -142,14 +170,17 @@ def determinar_antisimetrica(matriz, etiquetas):
                         {"row": indice_fila + 1, "column": indice_columna + 1},
                         {"row": indice_columna + 1, "column": indice_fila + 1},
                     ],
+                    definicion,
+                    f"Para que sea antisimetrica, elimina uno de estos dos pares: ({etiquetas[indice_fila]}, {etiquetas[indice_columna]}) o ({etiquetas[indice_columna]}, {etiquetas[indice_fila]}).",
                 )
 
-    return crear_resultado_positivo("Es antisimetrica porque no hay pares dobles entre elementos distintos.")
+    return crear_resultado_positivo("Es antisimetrica porque no hay pares dobles entre elementos distintos.", definicion)
 
 
 def determinar_asimetrica(matriz, etiquetas):
     """Revisa que no existan lazos ni pares opuestos simultaneos."""
     tamano = len(matriz)
+    definicion = DEFINICIONES_PROPIEDADES["asymmetric"]
 
     for indice, etiqueta in enumerate(etiquetas):
         if matriz[indice][indice] == 1:
@@ -157,6 +188,8 @@ def determinar_asimetrica(matriz, etiquetas):
                 f"No es asimetrica porque contiene el lazo ({etiqueta}, {etiqueta}).",
                 [etiqueta, etiqueta],
                 [{"row": indice + 1, "column": indice + 1}],
+                definicion,
+                f"Para que sea asimetrica, cambia a 0 la celda de la fila {etiqueta} y columna {etiqueta}.",
             )
 
     for indice_fila in range(tamano):
@@ -175,15 +208,18 @@ def determinar_asimetrica(matriz, etiquetas):
                         {"row": indice_fila + 1, "column": indice_columna + 1},
                         {"row": indice_columna + 1, "column": indice_fila + 1},
                     ],
+                    definicion,
+                    f"Para que sea asimetrica, elimina una de estas dos direcciones: ({etiquetas[indice_fila]}, {etiquetas[indice_columna]}) o ({etiquetas[indice_columna]}, {etiquetas[indice_fila]}).",
                 )
 
-    return crear_resultado_positivo("Es asimetrica porque no tiene lazos ni pares opuestos simultaneos.")
+    return crear_resultado_positivo("Es asimetrica porque no tiene lazos ni pares opuestos simultaneos.", definicion)
 
 
 def determinar_transitiva(matriz, etiquetas):
     """Revisa si todo camino (a,b) y (b,c) tambien tiene (a,c)."""
     tamano = len(matriz)
     filas_en_bits = convertir_filas_a_bits(matriz)
+    definicion = DEFINICIONES_PROPIEDADES["transitive"]
 
     for indice_origen in range(tamano):
         fila_origen_en_bits = filas_en_bits[indice_origen]
@@ -205,9 +241,11 @@ def determinar_transitiva(matriz, etiquetas):
                                     "missing": [etiquetas[indice_origen], etiquetas[indice_destino]],
                                 },
                                 [{"row": indice_origen + 1, "column": indice_destino + 1}],
+                                definicion,
+                                f"Para que sea transitiva, agrega el par faltante ({etiquetas[indice_origen]}, {etiquetas[indice_destino]}) o elimina alguno de los dos pares que forman el camino.",
                             )
 
-    return crear_resultado_positivo("Es transitiva porque cada camino de longitud dos tiene su par directo.")
+    return crear_resultado_positivo("Es transitiva porque cada camino de longitud dos tiene su par directo.", definicion)
 
 
 FUNCIONES_DE_PROPIEDADES = {
@@ -248,9 +286,11 @@ def determinar_comparabilidad(matriz, etiquetas):
                         {"row": indice_fila + 1, "column": indice_columna + 1},
                         {"row": indice_columna + 1, "column": indice_fila + 1},
                     ],
+                    "Para orden total, cada par de elementos distintos debe tener al menos una direccion.",
+                    f"Para que pueda ser orden total, agrega ({etiquetas[indice_fila]}, {etiquetas[indice_columna]}) o ({etiquetas[indice_columna]}, {etiquetas[indice_fila]}).",
                 )
 
-    return crear_resultado_positivo("Todo par de elementos distintos es comparable.")
+    return crear_resultado_positivo("Todo par de elementos distintos es comparable.", "Para orden total, cada par de elementos distintos debe tener al menos una direccion.")
 
 
 def analizar_propiedades(matriz, etiquetas):

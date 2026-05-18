@@ -145,6 +145,27 @@ body {
   margin-top: 10px;
 }
 
+.example-panel {
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px solid #cfe3d7;
+  border-radius: 8px;
+  background: #f6fbf8;
+}
+
+.example-panel label {
+  display: block;
+  margin-bottom: 8px;
+  color: #14532d;
+  font-weight: 800;
+}
+
+.example-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
 .paste-panel {
   margin-top: 14px;
   border: 1px solid var(--line);
@@ -544,6 +565,7 @@ body {
   .button-grid,
   .action-row,
   .quick-actions,
+  .example-row,
   .pdf-flow {
     grid-template-columns: 1fr;
   }

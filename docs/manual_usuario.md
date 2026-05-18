@@ -8,23 +8,34 @@
 4. Pulse `Crear`.
 5. Llene el cuadro `n x n` haciendo clic en las casillas 0/1.
 
-## Concepto clave
+## Que debe ingresar el usuario
 
-El proyecto usa una sola matriz: la matriz relacional `MR`.
+El usuario solo debe ingresar la matriz `MR`.
 
-La relacion `R` no es otra matriz. `R` es la lista de pares ordenados que se obtiene mirando las celdas con valor 1. Si la fila es `a`, la columna es `b` y la celda vale 1, entonces el par `(a,b)` pertenece a `R`.
-
-## Elementos del conjunto A
-
-Los elementos son los nombres de filas y columnas. No cambian los 0/1.
-
-Si escribe:
+No necesita escribir los nombres de los elementos. La aplicacion nombra automaticamente las filas y columnas como:
 
 ```text
-a,b,c,d
+1, 2, 3, ...
 ```
 
-la matriz se lee con esos nombres. Debe escribir exactamente `n` elementos separados por coma y pulsar `Aplicar`.
+## Como se lee MR
+
+La fila es el origen y la columna es el destino.
+
+Ejemplo:
+
+```text
+      1  2  3
+1     0  1  0
+2     0  0  1
+3     1  0  0
+```
+
+Entonces:
+
+```text
+R = {(1,2), (2,3), (3,1)}
+```
 
 ## Ingreso de matriz
 
@@ -35,16 +46,32 @@ Puede ingresar la matriz de dos formas:
 
 Tambien puede usar `Generar matriz aleatoria`, que cumple la opcion del PDF donde el sistema genera la matriz directamente.
 
-## Resultados
+## Propiedades y explicaciones
 
-El sistema muestra:
+Cada tarjeta muestra:
 
-- Relacion `R` como pares ordenados.
-- Propiedades: reflexiva, irreflexiva, simetrica, asimetrica, antisimetrica y transitiva.
-- Equivalencia.
-- Orden parcial, orden total y orden estricto.
-- Grafo dirigido basado en `MR`.
+- Si cumple o no cumple.
+- El caso que falla, cuando existe uno concreto.
+
+El "caso que falla" no es otra matriz: es un par o grupo de pares que muestra por que la propiedad no se cumple.
+
+## Grafo dirigido
+
+El grafo se genera a partir de `MR`:
+
+- Cada elemento `1, 2, ...` es un nodo.
+- Cada valor `1` de la matriz crea una flecha.
+- La fila indica desde donde sale la flecha.
+- La columna indica hacia donde llega la flecha.
+- Si el `1` esta en la diagonal, se dibuja un lazo.
+
+Ejemplo: si la celda de la fila `1` y columna `3` vale `1`, se dibuja una flecha de `1` hacia `3`.
 
 ## Validaciones
 
-El sistema rechaza matrices vacias, matrices no cuadradas, valores diferentes de 0 y 1, etiquetas duplicadas y tamanos fuera del rango 1 a 50.
+El sistema rechaza:
+
+- Matrices vacias.
+- Matrices que no sean cuadradas.
+- Valores diferentes de 0 y 1.
+- Tamanos que no sean numeros enteros positivos.

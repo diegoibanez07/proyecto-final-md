@@ -46,12 +46,13 @@ def analizar_matriz_completa():
     matriz, etiquetas, tamano, propiedades, clasificaciones = analizar_solicitud(
         request.get_json(silent=True)
     )
+    pares_de_la_relacion = obtener_pares_de_la_relacion(matriz, etiquetas)
 
     respuesta = {
         "valid": True,
         "n": tamano,
         "labels": etiquetas,
-        "relation": obtener_pares_de_la_relacion(matriz, etiquetas),
+        "relation": pares_de_la_relacion,
         "properties": propiedades,
         "classifications": clasificaciones,
         "graph": construir_grafo_dirigido(matriz, etiquetas),

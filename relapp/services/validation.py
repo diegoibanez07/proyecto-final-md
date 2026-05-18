@@ -24,18 +24,23 @@ class ErrorValidacion(ValueError):
         return respuesta
 
 
-def validar_tamano(tamano, minimo=1, maximo=50):
-    """Valida que n sea un entero dentro del rango permitido."""
+def crear_mensaje_tamano_valido():
+    """Crea el mensaje comun para explicar que n debe ser positivo."""
+    return "Ingrese un tamano n valido. Debe ser un numero entero mayor o igual a 1."
+
+
+def validar_tamano(tamano):
+    """Valida que n sea un entero positivo."""
     if isinstance(tamano, bool):
-        raise ErrorValidacion("Ingrese un tamano n valido entre 1 y 50.", "n")
+        raise ErrorValidacion(crear_mensaje_tamano_valido(), "n")
 
     try:
         tamano_convertido = int(tamano)
     except (TypeError, ValueError):
-        raise ErrorValidacion("Ingrese un tamano n valido entre 1 y 50.", "n")
+        raise ErrorValidacion(crear_mensaje_tamano_valido(), "n")
 
-    if tamano_convertido < minimo or tamano_convertido > maximo:
-        raise ErrorValidacion("Ingrese un tamano n valido entre 1 y 50.", "n")
+    if tamano_convertido < 1:
+        raise ErrorValidacion(crear_mensaje_tamano_valido(), "n")
 
     return tamano_convertido
 
@@ -108,13 +113,6 @@ def validar_etiquetas(etiquetas, tamano):
         if not texto_etiqueta:
             raise ErrorValidacion(
                 "Las etiquetas no pueden estar vacias.",
-                "labels",
-                {"position": posicion + 1},
-            )
-
-        if len(texto_etiqueta) > 20:
-            raise ErrorValidacion(
-                "Cada etiqueta debe tener maximo 20 caracteres.",
                 "labels",
                 {"position": posicion + 1},
             )

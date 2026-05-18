@@ -20,25 +20,40 @@
       </p>
       <div class="field-row">
         <label for="sizeInput">Tamano n</label>
-        <input id="sizeInput" class="form-control" type="number" min="1" max="50" value="4">
+        <input id="sizeInput" class="form-control" type="number" min="1" value="4">
         <button id="buildMatrixBtn" class="btn btn-primary" type="button" title="Crear matriz">Crear</button>
       </div>
-      <label for="labelsInput" class="form-label">Elementos del conjunto A</label>
-      <div class="label-editor">
-        <input id="labelsInput" class="form-control" type="text" value="1,2,3,4" placeholder="Ejemplo: a,b,c,d">
-        <button id="applyLabelsBtn" class="btn btn-outline-primary" type="button">Aplicar</button>
-      </div>
-      <div class="form-text">
-        Son los nombres de las filas y columnas. No cambian los 0/1, solo como se leen los pares de R.
-      </div>
-      <div id="labelsStatus" class="mini-status">A = {1, 2, 3, 4}</div>
-
       <h2 class="section-title">2. Entrada</h2>
       <div class="quick-actions">
-        <button class="btn btn-outline-primary" id="goMatrixBtn" type="button">Llenar cuadro n x n</button>
-        <button class="btn btn-primary" id="randomMatrixBtn" type="button">Generar matriz aleatoria</button>
+        <button class="btn btn-primary input-mode-btn" id="goMatrixBtn" type="button">Llenar matriz manual</button>
+        <button class="btn btn-outline-primary input-mode-btn" id="randomMatrixBtn" type="button">Generar matriz aleatoria</button>
       </div>
-      <p class="helper-text">La forma principal es llenar el cuadro de la derecha. Cada casilla cambia entre 0 y 1 con clic.</p>
+      <p class="helper-text">Puedes llenar la matriz manualmente o pedirle al sistema una matriz aleatoria.</p>
+
+      <div class="example-panel">
+        <label for="exampleTypeSelect">Generar matriz de ejemplo</label>
+        <div class="example-row">
+          <select id="exampleTypeSelect" class="form-select">
+            <optgroup label="Propiedades">
+              <option value="reflexive">Reflexiva</option>
+              <option value="irreflexive">Irreflexiva</option>
+              <option value="symmetric">Simetrica</option>
+              <option value="asymmetric">Asimetrica</option>
+              <option value="antisymmetric">Antisimetrica</option>
+              <option value="transitive">Transitiva</option>
+              <option value="equivalence">Equivalencia</option>
+            </optgroup>
+            <optgroup label="Ordenes">
+              <option value="partial_order">Orden parcial</option>
+              <option value="total_order">Orden total</option>
+              <option value="strict_order">Orden estricto</option>
+            </optgroup>
+          </select>
+          <button class="btn btn-outline-success" id="exampleMatrixBtn" type="button">Generar ejemplo</button>
+        </div>
+        <div class="form-text">Sirve para probar rapidamente una propiedad u orden.</div>
+      </div>
+
       <button class="btn btn-outline-danger w-100" id="clearBtn" type="button">Limpiar matriz</button>
 
       <details class="paste-panel">
@@ -68,25 +83,6 @@
     <section class="main-panel">
       <div id="alertBox" class="alert-area" aria-live="polite"></div>
 
-      <section class="pdf-flow">
-        <div>
-          <strong>a-b</strong>
-          <span>Ingresar o generar MR cuadrada</span>
-        </div>
-        <div>
-          <strong>d</strong>
-          <span>Captar y mostrar R</span>
-        </div>
-        <div>
-          <strong>e-f</strong>
-          <span>Probar propiedades y ordenes</span>
-        </div>
-        <div>
-          <strong>g</strong>
-          <span>Presentar grafo dirigido</span>
-        </div>
-      </section>
-
       <section class="panel matrix-panel" id="matrixPanel">
         <div class="panel-header">
           <h2>Cuadro para ingresar MR</h2>
@@ -99,7 +95,7 @@
         <div class="current-input">
           <div>
             <strong>Entrada actual</strong>
-            <span id="currentInputSummary">MR creada manualmente sobre A = {1, 2, 3, 4}</span>
+            <span id="currentInputSummary">MR inicial ingresada por pantalla. Filas y columnas: 1, 2, 3, 4</span>
           </div>
           <pre id="matrixTextOutput">1 1 0 0
 0 1 1 0
@@ -124,12 +120,14 @@
             <h2>Propiedades</h2>
             <span id="singleCheckStatus"></span>
           </div>
+          <p class="panel-note">Se muestran todas las propiedades solicitadas por el PDF con su estado.</p>
           <div id="propertiesOutput" class="cards-grid"></div>
         </div>
         <div class="panel">
           <div class="panel-header">
             <h2>Ordenes y equivalencia</h2>
           </div>
+          <p class="panel-note">Se muestran equivalencia y relaciones de orden con su estado.</p>
           <div id="classificationsOutput" class="cards-grid"></div>
         </div>
       </section>
@@ -139,6 +137,7 @@
           <h2>Grafo dirigido</h2>
           <span id="graphMeta"></span>
         </div>
+        <p class="panel-note">Cada fila/columna es un nodo. Cada 1 de MR crea una flecha desde la fila hacia la columna. Si el 1 esta en la diagonal, se dibuja un lazo.</p>
         <div id="graphCanvas" class="graph-canvas"></div>
       </section>
     </section>
