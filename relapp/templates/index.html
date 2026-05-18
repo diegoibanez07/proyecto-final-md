@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}RelApp - Analizador de Relaciones{% endblock %}
+
+{% block content %}
+<section class="tool-shell">
+  <div class="topbar">
+    <div>
+      <h1>RelApp</h1>
+      <p>Proyecto final: matriz relacional binaria, propiedades, ordenes y grafo dirigido.</p>
+    </div>
+    <div class="status-pill" id="healthStatus">Listo</div>
+  </div>
+
+  <div class="workspace-grid">
+    <aside class="panel controls-panel">
+      <h2>1. Matriz MR</h2>
+      <p class="helper-text">
+        El proyecto usa una sola matriz. Cada 1 en MR se convierte automaticamente en un par de la relacion R.
+      </p>
+      <div class="field-row">
+        <label for="sizeInput">Tamano n</label>
+        <input id="sizeInput" class="form-control" type="number" min="1" max="50" value="4">
+        <button id="buildMatrixBtn" class="btn btn-primary" type="button" title="Crear matriz">Crear</button>
+      </div>
+      <label for="labelsInput" class="form-label">Elementos del conjunto A</label>
+      <div class="label-editor">
+        <input id="labelsInput" class="form-control" type="text" value="1,2,3,4" placeholder="Ejemplo: a,b,c,d">
+        <button id="applyLabelsBtn" class="btn btn-outline-primary" type="button">Aplicar</button>
+      </div>
+      <div class="form-text">
+        Son los nombres de las filas y columnas. No cambian los 0/1, solo como se leen los pares de R.
+      </div>
+      <div id="labelsStatus" class="mini-status">A = {1, 2, 3, 4}</div>
+
+      <h2 class="section-title">2. Entrada</h2>
+      <div class="quick-actions">
+        <button class="btn btn-outline-primary" id="goMatrixBtn" type="button">Llenar cuadro n x n</button>
+        <button class="btn btn-primary" id="randomMatrixBtn" type="button">Generar matriz aleatoria</button>
+      </div>
+      <p class="helper-text">La forma principal es llenar el cuadro de la derecha. Cada casilla cambia entre 0 y 1 con clic.</p>
+      <button class="btn btn-outline-danger w-100" id="clearBtn" type="button">Limpiar matriz</button>
+
+      <details class="paste-panel">
+        <summary>Opcional: pegar matriz completa</summary>
+        <p>Use esto solo si ya tiene la matriz escrita. No es necesario para llenar la matriz.</p>
+        <textarea id="pasteMatrix" class="form-control" rows="5">1 1 0 0
+0 1 1 0
+0 0 1 1
+0 0 0 1</textarea>
+        <button id="pasteMatrixBtn" class="btn btn-outline-primary w-100 mt-2" type="button">Cargar texto</button>
+      </details>
+
+      <hr>
+      <h2>3. Analisis</h2>
+      <button id="analyzeBtn" class="btn btn-success w-100" type="button">Analizar todo</button>
+      <div class="button-grid mt-3">
+        {% for key, label in property_names.items() %}
+          <button class="btn btn-outline-dark property-btn" data-property="{{ key }}" type="button">{{ label }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="action-row mt-3">
+        <button id="copyRelationBtn" class="btn btn-outline-secondary" type="button">Copiar R</button>
+      </div>
+    </aside>
+
+    <section class="main-panel">
+      <div id="alertBox" class="alert-area" aria-live="polite"></div>
+
+      <section class="pdf-flow">
+        <div>
+          <strong>a-b</strong>
+          <span>Ingresar o generar MR cuadrada</span>
+        </div>
+        <div>
+          <strong>d</strong>
+          <span>Captar y mostrar R</span>
+        </div>
+        <div>
+          <strong>e-f</strong>
+          <span>Probar propiedades y ordenes</span>
+        </div>
+        <div>
+          <strong>g</strong>
+          <span>Presentar grafo dirigido</span>
+        </div>
+      </section>
+
+      <section class="panel matrix-panel" id="matrixPanel">
+        <div class="panel-header">
+          <h2>Cuadro para ingresar MR</h2>
+          <span id="matrixMeta">4 x 4, binaria y cuadrada</span>
+        </div>
+        <div class="editor-callout">
+          <strong>Esta es la matriz que debes llenar.</strong>
+          <span>Haz clic en cada casilla para cambiar 0 por 1 o 1 por 0. Fila = origen, columna = destino.</span>
+        </div>
+        <div class="current-input">
+          <div>
+            <strong>Entrada actual</strong>
+            <span id="currentInputSummary">MR creada manualmente sobre A = {1, 2, 3, 4}</span>
+          </div>
+          <pre id="matrixTextOutput">1 1 0 0
+0 1 1 0
+0 0 1 1
+0 0 0 1</pre>
+        </div>
+        <div id="matrixContainer" class="matrix-scroll"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Relacion R</h2>
+          <span id="relationCount">0 pares</span>
+        </div>
+        <p class="panel-note">R no se escribe aparte: sale de las posiciones con 1 en la matriz MR.</p>
+        <pre id="relationOutput" class="relation-box">R = {}</pre>
+      </section>
+
+      <section class="results-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Propiedades</h2>
+            <span id="singleCheckStatus"></span>
+          </div>
+          <div id="propertiesOutput" class="cards-grid"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Ordenes y equivalencia</h2>
+          </div>
+          <div id="classificationsOutput" class="cards-grid"></div>
+        </div>
+      </section>
+
+      <section class="panel graph-panel">
+        <div class="panel-header">
+          <h2>Grafo dirigido</h2>
+          <span id="graphMeta"></span>
+        </div>
+        <div id="graphCanvas" class="graph-canvas"></div>
+      </section>
+    </section>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

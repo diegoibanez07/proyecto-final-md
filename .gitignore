@@ -1,0 +1,43 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cache de pruebas
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Pruebas automatizadas no incluidas en Git por solicitud del usuario
+tests/
+
+# Cache de herramientas
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs y temporales
+*.log
+*.tmp
+*.temp
+
+# Variables de entorno locales
+.env
+.env.*
+
+# Paquetes generados para entrega
+*.zip
+*.rar

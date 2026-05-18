@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Manual de Usuario - RelApp{% endblock %}
+
+{% block content %}
+<section class="manual-page">
+  <h1>Manual de usuario</h1>
+  <div class="manual-grid">
+    <article>
+      <h2>Idea principal</h2>
+      <p>El proyecto trabaja con una sola matriz relacional MR. La relacion R es la lista de pares que salen de las celdas con valor 1.</p>
+    </article>
+    <article>
+      <h2>Entrada</h2>
+      <p>Seleccione n, pulse Crear y llene el cuadro n x n haciendo clic en las casillas 0/1. Pegar texto es opcional.</p>
+    </article>
+    <article>
+      <h2>Elementos</h2>
+      <p>Los elementos del conjunto A son nombres para filas y columnas. Deben ser unicos y coincidir con el tamano n.</p>
+    </article>
+    <article>
+      <h2>Resultados</h2>
+      <p>La aplicacion muestra R, propiedades relacionales, equivalencia, orden parcial, orden total, orden estricto y grafo dirigido.</p>
+    </article>
+    <article>
+      <h2>Validaciones</h2>
+      <p>La matriz debe ser cuadrada, no vacia y compuesta solo por 0 y 1.</p>
+    </article>
+    <article>
+      <h2>Pruebas</h2>
+      <p>El proyecto incluye pruebas automatizadas con pytest para validaciones, propiedades, ordenes, grafo y API.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}
