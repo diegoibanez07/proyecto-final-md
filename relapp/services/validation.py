@@ -128,7 +128,7 @@ def validar_etiquetas(etiquetas, tamano):
 def validar_solicitud_analisis(datos):
     """Valida el JSON completo que llega desde la interfaz."""
     if not isinstance(datos, dict):
-        raise ErrorValidacion("La solicitud debe enviarse en formato JSON.")
+        raise ErrorValidacion("La peticion debe enviarse en formato JSON.")
 
     matriz = datos.get("matrix")
     tamano = validar_matriz(matriz)

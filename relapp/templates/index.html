@@ -1,23 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}RelApp - Analizador de Relaciones{% endblock %}
+{% block title %}Analizador de Relaciones{% endblock %}
 
 {% block content %}
 <section class="tool-shell">
-  <div class="topbar">
-    <div>
-      <h1>RelApp</h1>
-      <p>Proyecto final: matriz relacional binaria, propiedades, ordenes y grafo dirigido.</p>
-    </div>
-    <div class="status-pill" id="healthStatus">Listo</div>
-  </div>
-
   <div class="workspace-grid">
     <aside class="panel controls-panel">
       <h2>1. Matriz MR</h2>
-      <p class="helper-text">
-        El proyecto usa una sola matriz. Cada 1 en MR se convierte automaticamente en un par de la relacion R.
-      </p>
       <div class="field-row">
         <label for="sizeInput">Tamano n</label>
         <input id="sizeInput" class="form-control" type="number" min="1" value="4">
@@ -28,8 +17,6 @@
         <button class="btn btn-primary input-mode-btn" id="goMatrixBtn" type="button">Llenar matriz manual</button>
         <button class="btn btn-outline-primary input-mode-btn" id="randomMatrixBtn" type="button">Generar matriz aleatoria</button>
       </div>
-      <p class="helper-text">Puedes llenar la matriz manualmente o pedirle al sistema una matriz aleatoria.</p>
-
       <div class="example-panel">
         <label for="exampleTypeSelect">Generar matriz de ejemplo</label>
         <div class="example-row">
@@ -51,14 +38,12 @@
           </select>
           <button class="btn btn-outline-success" id="exampleMatrixBtn" type="button">Generar ejemplo</button>
         </div>
-        <div class="form-text">Sirve para probar rapidamente una propiedad u orden.</div>
       </div>
 
       <button class="btn btn-outline-danger w-100" id="clearBtn" type="button">Limpiar matriz</button>
 
       <details class="paste-panel">
         <summary>Opcional: pegar matriz completa</summary>
-        <p>Use esto solo si ya tiene la matriz escrita. No es necesario para llenar la matriz.</p>
         <textarea id="pasteMatrix" class="form-control" rows="5">1 1 0 0
 0 1 1 0
 0 0 1 1
@@ -66,18 +51,6 @@
         <button id="pasteMatrixBtn" class="btn btn-outline-primary w-100 mt-2" type="button">Cargar texto</button>
       </details>
 
-      <hr>
-      <h2>3. Analisis</h2>
-      <button id="analyzeBtn" class="btn btn-success w-100" type="button">Analizar todo</button>
-      <div class="button-grid mt-3">
-        {% for key, label in property_names.items() %}
-          <button class="btn btn-outline-dark property-btn" data-property="{{ key }}" type="button">{{ label }}</button>
-        {% endfor %}
-      </div>
-
-      <div class="action-row mt-3">
-        <button id="copyRelationBtn" class="btn btn-outline-secondary" type="button">Copiar R</button>
-      </div>
     </aside>
 
     <section class="main-panel">
@@ -87,10 +60,6 @@
         <div class="panel-header">
           <h2>Cuadro para ingresar MR</h2>
           <span id="matrixMeta">4 x 4, binaria y cuadrada</span>
-        </div>
-        <div class="editor-callout">
-          <strong>Esta es la matriz que debes llenar.</strong>
-          <span>Haz clic en cada casilla para cambiar 0 por 1 o 1 por 0. Fila = origen, columna = destino.</span>
         </div>
         <div class="current-input">
           <div>
@@ -110,7 +79,6 @@
           <h2>Relacion R</h2>
           <span id="relationCount">0 pares</span>
         </div>
-        <p class="panel-note">R no se escribe aparte: sale de las posiciones con 1 en la matriz MR.</p>
         <pre id="relationOutput" class="relation-box">R = {}</pre>
       </section>
 
@@ -118,16 +86,13 @@
         <div class="panel">
           <div class="panel-header">
             <h2>Propiedades</h2>
-            <span id="singleCheckStatus"></span>
           </div>
-          <p class="panel-note">Se muestran todas las propiedades solicitadas por el PDF con su estado.</p>
           <div id="propertiesOutput" class="cards-grid"></div>
         </div>
         <div class="panel">
           <div class="panel-header">
             <h2>Ordenes y equivalencia</h2>
           </div>
-          <p class="panel-note">Se muestran equivalencia y relaciones de orden con su estado.</p>
           <div id="classificationsOutput" class="cards-grid"></div>
         </div>
       </section>
@@ -137,7 +102,6 @@
           <h2>Grafo dirigido</h2>
           <span id="graphMeta"></span>
         </div>
-        <p class="panel-note">Cada fila/columna es un nodo. Cada 1 de MR crea una flecha desde la fila hacia la columna. Si el 1 esta en la diagonal, se dibuja un lazo.</p>
         <div id="graphCanvas" class="graph-canvas"></div>
       </section>
     </section>

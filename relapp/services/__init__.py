@@ -1,1 +1,1 @@
-"""Servicios de logica matematica para RelApp."""
+"""Servicios de logica matematica para el analizador de relaciones."""

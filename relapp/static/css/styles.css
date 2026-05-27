@@ -18,79 +18,21 @@
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   background: var(--page);
   font-family: Inter, "Segoe UI", Arial, sans-serif;
-}
-
-.app-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 58px;
-  padding: 0 28px;
-  border-bottom: 1px solid var(--line);
-  background: #fff;
-}
-
-.brand {
-  color: var(--accent-dark);
-  font-size: 1.3rem;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  gap: 18px;
-}
-
-.nav-links a {
-  color: var(--ink);
-  font-weight: 600;
-  text-decoration: none;
 }
 
 .tool-shell {
   padding: 22px;
 }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 0 auto 18px;
-  max-width: 1480px;
-}
-
-.topbar h1 {
-  margin: 0;
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: 0;
-}
-
-.topbar p {
-  margin: 4px 0 0;
-  color: var(--muted);
-}
-
-.status-pill {
-  min-width: 96px;
-  padding: 8px 12px;
-  border: 1px solid #bdd7ee;
-  border-radius: 999px;
-  color: var(--accent-dark);
-  background: #eef7ff;
-  font-weight: 700;
-  text-align: center;
-}
-
 .workspace-grid {
   display: grid;
   grid-template-columns: minmax(290px, 340px) minmax(0, 1fr);
   gap: 18px;
+  width: 100%;
   max-width: 1480px;
   margin: 0 auto;
 }
@@ -102,10 +44,16 @@ body {
 }
 
 .panel {
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
   box-shadow: 0 10px 24px rgba(20, 32, 50, 0.05);
+}
+
+.matrix-panel,
+.graph-panel {
+  overflow: hidden;
 }
 
 .controls-panel {
@@ -124,18 +72,6 @@ body {
 
 .section-title {
   margin-top: 18px !important;
-}
-
-.helper-text,
-.panel-note {
-  margin: 8px 0 12px;
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.35;
-}
-
-.panel-note {
-  padding: 0 16px;
 }
 
 .quick-actions {
@@ -180,32 +116,6 @@ body {
   font-weight: 800;
 }
 
-.paste-panel p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.editor-callout {
-  display: grid;
-  gap: 4px;
-  margin: 14px 16px 10px;
-  padding: 12px;
-  border: 1px solid #a7c7e7;
-  border-radius: 8px;
-  background: #eef7ff;
-}
-
-.editor-callout strong {
-  color: var(--accent-dark);
-  font-weight: 900;
-}
-
-.editor-callout span {
-  color: #344054;
-  line-height: 1.35;
-}
-
 .flash-panel {
   animation: flashPanel 1.4s ease;
 }
@@ -226,6 +136,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(180px, 300px);
   gap: 12px;
+  min-width: 0;
   margin: 0 16px 10px;
   padding: 12px;
   border: 1px solid #c8d7e6;
@@ -236,6 +147,7 @@ body {
 .current-input strong,
 .current-input span {
   display: block;
+  min-width: 0;
 }
 
 .current-input strong {
@@ -252,6 +164,8 @@ body {
 }
 
 .current-input pre {
+  min-width: 0;
+  max-width: 100%;
   margin: 0;
   max-height: 120px;
   overflow: auto;
@@ -308,19 +222,10 @@ body {
   word-break: break-word;
 }
 
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.action-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
 .matrix-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow: auto;
   max-height: 56vh;
   padding: 16px;
@@ -329,7 +234,7 @@ body {
 .matrix-table {
   border-collapse: separate;
   border-spacing: 6px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .matrix-table th {
@@ -373,40 +278,8 @@ body {
   display: none;
 }
 
-.pdf-flow {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.pdf-flow div {
-  min-height: 76px;
-  border: 1px solid #c8d7e6;
-  border-radius: 8px;
-  padding: 12px;
-  background: #eef7ff;
-}
-
-.pdf-flow strong,
-.pdf-flow span {
-  display: block;
-}
-
-.pdf-flow strong {
-  color: var(--accent-dark);
-  font-size: 0.85rem;
-  font-weight: 900;
-}
-
-.pdf-flow span {
-  margin-top: 4px;
-  color: #344054;
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
 .relation-box {
+  max-width: 100%;
   min-height: 76px;
   max-height: 170px;
   margin: 0;
@@ -544,29 +417,15 @@ body {
     position: static;
   }
 
-  .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }
 
 @media (max-width: 620px) {
-  .app-nav {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 6px;
-    padding: 12px 18px;
-  }
-
   .tool-shell {
     padding: 14px;
   }
 
-  .button-grid,
-  .action-row,
   .quick-actions,
-  .example-row,
-  .pdf-flow {
+  .example-row {
     grid-template-columns: 1fr;
   }
 

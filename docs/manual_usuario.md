@@ -1,4 +1,4 @@
-# Manual de usuario - RelApp
+# Manual de usuario
 
 ## Inicio
 
@@ -44,7 +44,7 @@ Puede ingresar la matriz de dos formas:
 - Principal: editando cada celda en el cuadro `n x n` con clic.
 - Opcional: pegando una matriz binaria cuadrada en el cuadro de texto.
 
-Tambien puede usar `Generar matriz aleatoria`, que cumple la opcion del PDF donde el sistema genera la matriz directamente.
+Tambien puede usar `Generar matriz aleatoria` para que el sistema cree una matriz binaria cuadrada automaticamente.
 
 ## Propiedades y explicaciones
 

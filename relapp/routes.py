@@ -1,4 +1,4 @@
-"""Rutas web y API JSON de RelApp."""
+"""Rutas web y API JSON del analizador de relaciones."""
 
 from flask import Blueprint, jsonify, render_template, request
 
@@ -37,12 +37,12 @@ def mostrar_manual():
 @bp.get("/api/health")
 def verificar_estado():
     """Permite comprobar que la aplicacion esta encendida."""
-    return jsonify({"ok": True, "app": "RelApp", "status": "running"})
+    return jsonify({"ok": True, "app": "Analizador de Relaciones", "status": "running"})
 
 
 @bp.post("/api/analyze")
 def analizar_matriz_completa():
-    """Recibe una matriz y devuelve todos los resultados pedidos por el PDF."""
+    """Recibe una matriz y devuelve el analisis completo."""
     matriz, etiquetas, tamano, propiedades, clasificaciones = analizar_solicitud(
         request.get_json(silent=True)
     )
@@ -84,11 +84,11 @@ def analizar_propiedad_individual(nombre_propiedad):
 
 @bp.post("/api/generate")
 def generar_matriz():
-    """Genera la matriz aleatoria permitida por el PDF."""
+    """Genera una matriz binaria cuadrada aleatoria."""
     datos = request.get_json(silent=True)
 
     if not isinstance(datos, dict):
-        raise ErrorValidacion("La solicitud debe enviarse en formato JSON.")
+        raise ErrorValidacion("La peticion debe enviarse en formato JSON.")
 
     resultado = generar_matriz_aleatoria(datos.get("n", 3), semilla=datos.get("seed"))
 

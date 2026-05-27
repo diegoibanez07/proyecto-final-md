@@ -77,8 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Analiza la matriz inicial.
   analizarTodo();
 
-  // Comprueba que el backend este respondiendo.
-  verificarEstadoDelServidor();
 });
 
 // Conecta cada boton o campo con una funcion concreta.
@@ -98,20 +96,8 @@ function conectarEventosDeLaInterfaz() {
   // Conecta el boton para cargar texto pegado.
   buscarElemento("#pasteMatrixBtn").addEventListener("click", cargarMatrizPegada);
 
-  // Conecta el boton para analizar todo.
-  buscarElemento("#analyzeBtn").addEventListener("click", analizarTodo);
-
   // Conecta el boton para limpiar la matriz.
   buscarElemento("#clearBtn").addEventListener("click", limpiarMatriz);
-
-  // Conecta el boton para copiar la relacion R.
-  buscarElemento("#copyRelationBtn").addEventListener("click", copiarRelacion);
-
-  // Conecta cada boton de propiedad individual.
-  buscarElementos(".property-btn").forEach((botonPropiedad) => {
-    // Ejecuta solo la propiedad marcada en el boton.
-    botonPropiedad.addEventListener("click", () => analizarPropiedadIndividual(botonPropiedad.dataset.property));
-  });
 }
 
 // Crea una matriz vacia con el tamano indicado por el usuario.
@@ -645,33 +631,6 @@ async function analizarTodo() {
   }
 }
 
-// Analiza una sola propiedad.
-async function analizarPropiedadIndividual(nombrePropiedad) {
-  // Deshabilita controles durante la peticion.
-  cambiarEstadoDeProceso(true);
-
-  // Intenta pedir la propiedad seleccionada.
-  try {
-    // Envia matriz y propiedad al backend.
-    const respuesta = await enviarJson(`/api/check/${nombrePropiedad}`, crearDatosParaAnalisis());
-
-    // Muestra estado corto.
-    buscarElemento("#singleCheckStatus").textContent = respuesta.result.value ? "Cumple" : "No cumple";
-
-    // Muestra solo la tarjeta de esa propiedad.
-    buscarElemento("#propertiesOutput").replaceChildren(crearTarjetaResultado(respuesta.display_name, respuesta.result));
-
-    // Limpia avisos anteriores.
-    limpiarAviso();
-  } catch (error) {
-    // Muestra errores de validacion o API.
-    mostrarAviso(error.message, "danger");
-  } finally {
-    // Habilita controles nuevamente.
-    cambiarEstadoDeProceso(false);
-  }
-}
-
 // Envia JSON a una ruta del backend y devuelve JSON.
 async function enviarJson(ruta, datos) {
   // Ejecuta la peticion HTTP.
@@ -692,7 +651,7 @@ async function enviarJson(ruta, datos) {
   // Revisa errores HTTP o errores de validacion.
   if (!respuestaHttp.ok || respuestaJson.valid === false) {
     // Lanza error con mensaje entendible.
-    throw new Error(respuestaJson.error || "No fue posible procesar la solicitud.");
+    throw new Error(respuestaJson.error || "No fue posible procesar la peticion.");
   }
 
   // Devuelve el JSON valido.
@@ -729,11 +688,8 @@ function mostrarRelacion(relacion) {
   buscarElemento("#relationCount").textContent = `${relacion.length} pares`;
 }
 
-// Muestra todas las propiedades solicitadas.
+// Muestra todas las propiedades calculadas.
 function mostrarPropiedades(propiedades) {
-  // Limpia estado de propiedad individual.
-  buscarElemento("#singleCheckStatus").textContent = "";
-
   // Crea una tarjeta por cada propiedad.
   const tarjetas = Object.entries(propiedades).map(([clave, resultado]) => {
     // Devuelve tarjeta con nombre visible.
@@ -744,7 +700,7 @@ function mostrarPropiedades(propiedades) {
   buscarElemento("#propertiesOutput").replaceChildren(...tarjetas);
 }
 
-// Muestra todas las clasificaciones solicitadas.
+// Muestra todas las clasificaciones calculadas.
 function mostrarClasificaciones(clasificaciones) {
   // Crea una tarjeta por cada clasificacion.
   const tarjetas = Object.entries(clasificaciones).map(([clave, resultado]) => {
@@ -969,24 +925,6 @@ function crearMensajeDeGrafo(texto) {
   return mensaje;
 }
 
-// Copia la relacion R al portapapeles.
-async function copiarRelacion() {
-  // Lee el texto visible de R.
-  const textoRelacion = buscarElemento("#relationOutput").textContent;
-
-  // Intenta copiar usando el navegador.
-  try {
-    // Copia el texto.
-    await navigator.clipboard.writeText(textoRelacion);
-
-    // Informa exito.
-    mostrarAviso("Relacion copiada.", "success");
-  } catch {
-    // Informa error si el navegador no permite copiar.
-    mostrarAviso("No fue posible copiar al portapapeles.", "warning");
-  }
-}
-
 // Muestra un aviso Bootstrap.
 function mostrarAviso(mensaje, tipo) {
   // Escribe el HTML del aviso.
@@ -1001,23 +939,12 @@ function limpiarAviso() {
 
 // Activa o desactiva controles durante procesos.
 function cambiarEstadoDeProceso(estaProcesando) {
-  // Actualiza indicador superior.
-  buscarElemento("#healthStatus").textContent = estaProcesando ? "Procesando" : "Listo";
-
-  // Bloquea o desbloquea analizar todo.
-  buscarElemento("#analyzeBtn").disabled = estaProcesando;
-
   // Bloquea o desbloquea matriz aleatoria.
   buscarElemento("#randomMatrixBtn").disabled = estaProcesando;
 
   // Bloquea o desbloquea ejemplo rapido.
   buscarElemento("#exampleMatrixBtn").disabled = estaProcesando;
 
-  // Bloquea o desbloquea propiedades individuales.
-  buscarElementos(".property-btn").forEach((boton) => {
-    // Aplica el estado disabled.
-    boton.disabled = estaProcesando;
-  });
 }
 
 // Programa analisis despues de editar una celda.
@@ -1090,24 +1017,6 @@ function marcarModoDeEntrada(modo) {
 
   // Pinta ejemplo como inactivo si corresponde.
   botonEjemplo.classList.toggle("btn-outline-success", !modoEjemploActivo);
-}
-
-// Verifica que la API este activa.
-async function verificarEstadoDelServidor() {
-  // Intenta consultar salud de la API.
-  try {
-    // Pide estado al backend.
-    const respuesta = await fetch("/api/health");
-
-    // Convierte respuesta a JSON.
-    const datos = await respuesta.json();
-
-    // Muestra estado listo si todo funciona.
-    buscarElemento("#healthStatus").textContent = datos.ok ? "Listo" : "Revision";
-  } catch {
-    // Muestra fallo si no hay API.
-    buscarElemento("#healthStatus").textContent = "Sin API";
-  }
 }
 
 // Evita que mensajes externos rompan el HTML.

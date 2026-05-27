@@ -1,52 +1,60 @@
-# RelApp - Proyecto Matematicas Discretas
+# Analizador de Relaciones
 
-Aplicacion web local orientada al PDF `Proyecto_Final_M.D..pdf`.
+Aplicacion web local para analizar matrices relacionales binarias. Permite ingresar una matriz MR, obtener la relacion R, revisar propiedades, revisar relaciones de orden y dibujar el grafo dirigido correspondiente.
 
-## Que hace
+## Ejecucion
 
-- Permite crear una matriz relacional binaria `MR` de tamano `n x n`.
-- Permite llenar la matriz con clics o generarla aleatoriamente.
-- Obtiene automaticamente la relacion `R`.
-- Calcula las propiedades: reflexiva, irreflexiva, simetrica, asimetrica, antisimetrica y transitiva.
-- Indica si es equivalencia, orden parcial, orden total u orden estricto.
-- Dibuja el grafo dirigido correspondiente.
+En Windows puede abrir el proyecto con run_windows.bat.
 
-## Como ejecutar
+Tambien puede ejecutarlo desde terminal con Python usando app.py.
 
-```powershell
-.\.venv\Scripts\python.exe app.py
-```
+Despues de iniciar la aplicacion, abra esta direccion en el navegador:
 
-Luego abra:
-
-```text
 http://127.0.0.1:5000
-```
 
-Tambien puede usar:
+## Uso basico
 
-```powershell
-run_windows.bat
-```
+1. Escriba el tamano n de la matriz.
+2. Pulse Crear.
+3. Llene la matriz con clics sobre las casillas 0 y 1.
+4. Revise la relacion R, las propiedades, los ordenes y el grafo dirigido.
 
-## Como se interpreta la matriz
+## Entradas disponibles
 
-La app nombra automaticamente filas y columnas como `1, 2, 3...`.
+La matriz puede ingresarse de estas formas:
 
-Si la celda de la fila `1` y columna `3` vale `1`, entonces existe el par:
+- Llenar matriz manual.
+- Generar matriz aleatoria.
+- Generar matriz de ejemplo por propiedad u orden.
+- Pegar una matriz completa en texto.
 
-```text
-(1, 3)
-```
+## Como se interpreta MR
 
-Ese par aparece en `R` y se dibuja como una flecha del nodo `1` al nodo `3`.
+La matriz usa los numeros 1, 2, 3, ..., n para filas y columnas.
 
-## Grafo dirigido
+La fila indica el origen.
+La columna indica el destino.
 
-El grafo se construye directamente desde `MR`:
+Si la casilla de la fila 1 y columna 3 tiene valor 1, entonces existe el par (1, 3). Ese par aparece en R y se dibuja como una flecha desde 1 hacia 3.
 
-- Cada fila/columna es un nodo.
-- Cada `1` en la matriz es una flecha.
-- La fila indica el origen.
-- La columna indica el destino.
-- Un `1` en la diagonal crea un lazo del nodo hacia si mismo.
+## Resultados
+
+La aplicacion muestra:
+
+- Relacion R completa.
+- Propiedades: reflexiva, irreflexiva, simetrica, asimetrica, antisimetrica y transitiva.
+- Equivalencia.
+- Orden parcial.
+- Orden total.
+- Orden estricto.
+- Grafo dirigido.
+
+## Validaciones
+
+La aplicacion valida que la matriz:
+
+- No este vacia.
+- Sea cuadrada.
+- Contenga solo 0 y 1.
+
+Tambien valida que n sea un numero entero positivo.

@@ -1,4 +1,4 @@
-"""Generacion de matrices permitida por el PDF del proyecto."""
+"""Generacion de matrices binarias cuadradas."""
 
 import random
 

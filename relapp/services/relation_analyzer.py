@@ -294,7 +294,7 @@ def determinar_comparabilidad(matriz, etiquetas):
 
 
 def analizar_propiedades(matriz, etiquetas):
-    """Calcula todas las propiedades relacionales solicitadas por el PDF."""
+    """Calcula todas las propiedades relacionales."""
     resultados = {}
 
     for nombre_propiedad, funcion_propiedad in FUNCIONES_DE_PROPIEDADES.items():
