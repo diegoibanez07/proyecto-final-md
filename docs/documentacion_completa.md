@@ -1,193 +1,332 @@
 # Documentacion completa
 
-## 1. Idea general
+## 1. Que hace la aplicacion
 
-La aplicacion analiza relaciones binarias usando una matriz relacional llamada MR.
+La aplicacion sirve para estudiar relaciones binarias usando una matriz relacional llamada MR.
 
-MR es una matriz cuadrada formada solamente por ceros y unos.
+Una relacion binaria dice que elementos estan relacionados con otros elementos.
 
-Un valor 1 significa que existe una relacion entre el elemento de la fila y el elemento de la columna.
+La matriz MR guarda esa informacion usando solo dos valores:
 
-Un valor 0 significa que esa relacion no existe.
+- 1 significa que la relacion existe.
+- 0 significa que la relacion no existe.
 
-Con esa matriz, la aplicacion obtiene:
+Con una sola matriz, la aplicacion obtiene automaticamente:
 
 - La relacion R.
 - Las propiedades de la relacion.
-- Si la relacion es equivalencia.
-- Si la relacion es orden parcial.
-- Si la relacion es orden total.
-- Si la relacion es orden estricto.
+- La clasificacion como equivalencia, orden parcial, orden total u orden estricto.
 - El grafo dirigido.
 
-## 2. Que debe ingresar el usuario
+El usuario no tiene que escribir R aparte. R sale directamente de la matriz.
 
-El usuario debe ingresar una sola matriz MR.
+## 2. Que significa n
 
-No debe ingresar otra matriz para R.
+n es el tamano de la matriz.
 
-No debe escribir manualmente los pares de R.
+Si n vale 4, la matriz tiene 4 filas y 4 columnas.
 
-La aplicacion nombra filas y columnas automaticamente como 1, 2, 3, hasta n.
+Eso se escribe como matriz 4 x 4.
 
-La fila representa el origen.
+Las filas y columnas se nombran automaticamente:
 
-La columna representa el destino.
+- 1
+- 2
+- 3
+- 4
 
-Si la fila 1 y la columna 3 tienen valor 1, entonces existe el par (1, 3).
+Si n vale 6, los elementos serian 1, 2, 3, 4, 5 y 6.
 
-## 3. Formas de entrada
+## 3. Como se lee la matriz MR
 
-La aplicacion permite cuatro formas de trabajar con la matriz:
+La fila indica de donde sale la relacion.
 
-- Crear una matriz vacia y llenarla manualmente.
-- Generar una matriz aleatoria.
-- Generar una matriz de ejemplo por propiedad u orden.
-- Pegar una matriz completa en texto.
+La columna indica hacia donde llega la relacion.
 
-La forma principal es llenar el cuadro de la matriz con clics.
+Por ejemplo, si en la fila 2 y columna 5 hay un 1, entonces existe el par:
 
-Cada casilla cambia entre 0 y 1.
+(2, 5)
 
-## 4. Validaciones de entrada
+Eso quiere decir que 2 se relaciona con 5.
 
-La matriz se valida antes de calcular cualquier resultado.
+Si en esa misma posicion hay un 0, entonces el par (2, 5) no pertenece a la relacion.
+
+## 4. Ejemplo sencillo de matriz y relacion R
+
+Supongamos esta matriz de 3 x 3:
+
+Fila 1: 1 0 1
+
+Fila 2: 0 1 0
+
+Fila 3: 1 0 1
+
+Se revisan las posiciones donde aparece 1.
+
+En la fila 1 hay 1 en columnas 1 y 3.
+
+Eso genera:
+
+- (1, 1)
+- (1, 3)
+
+En la fila 2 hay 1 en columna 2.
+
+Eso genera:
+
+- (2, 2)
+
+En la fila 3 hay 1 en columnas 1 y 3.
+
+Eso genera:
+
+- (3, 1)
+- (3, 3)
+
+Entonces la relacion completa es:
+
+R = {(1, 1), (1, 3), (2, 2), (3, 1), (3, 3)}
+
+## 5. Formas de ingresar la matriz
+
+La aplicacion permite trabajar con la matriz de varias formas.
+
+Primera forma: llenar matriz manual.
+
+El usuario escribe n, pulsa Crear y llena las casillas haciendo clic.
+
+Segunda forma: generar matriz aleatoria.
+
+La aplicacion crea una matriz de ceros y unos de forma automatica.
+
+Tercera forma: generar matriz de ejemplo.
+
+El usuario elige una propiedad u orden, y la aplicacion crea una matriz que sirve para probar ese caso.
+
+Cuarta forma: pegar matriz completa.
+
+El usuario puede pegar la matriz escrita en texto, siempre que sea cuadrada y tenga solo 0 y 1.
+
+## 6. Validaciones
+
+Antes de calcular resultados, la aplicacion revisa que la entrada sea correcta.
 
 La matriz debe cumplir:
 
-- Debe existir.
 - No puede estar vacia.
+- Debe ser cuadrada.
 - Todas las filas deben tener la misma cantidad de valores.
-- Debe tener la misma cantidad de filas y columnas.
 - Solo puede contener 0 y 1.
 
 El tamano n debe ser un numero entero positivo.
 
-Si una entrada no cumple, la aplicacion muestra un error claro.
+Si algo no cumple, la aplicacion muestra un error.
 
-## 5. Relacion R
+## 7. Propiedades relacionales
 
-R es el conjunto de pares ordenados que salen de los unos de MR.
+Las propiedades dicen como se comportan los pares de la relacion.
 
-La regla es:
+La aplicacion revisa estas propiedades:
 
-Si MR en la fila i y columna j vale 1, entonces el par (i, j) pertenece a R.
+- Reflexiva.
+- Irreflexiva.
+- Simetrica.
+- Asimetrica.
+- Antisimetrica.
+- Transitiva.
 
-Ejemplo:
-
-Matriz:
-
-0 1
-
-1 0
-
-Relacion obtenida:
-
-R = {(1, 2), (2, 1)}
-
-## 6. Propiedades relacionales
-
-## 6.1 Reflexiva
+## 8. Propiedad reflexiva
 
 Una relacion es reflexiva cuando todos los elementos se relacionan consigo mismos.
 
-En matriz, toda la diagonal principal debe valer 1.
+Eso significa que deben existir todos los pares de la forma:
+
+- (1, 1)
+- (2, 2)
+- (3, 3)
+- Y asi hasta n.
+
+En la matriz, esto se ve en la diagonal principal.
+
+La diagonal principal va desde la esquina superior izquierda hasta la esquina inferior derecha.
+
+Para que sea reflexiva, toda esa diagonal debe tener 1.
 
 Ejemplo de diagonal reflexiva:
 
-1, 1, 1
+1, 1, 1, 1
 
-## 6.2 Irreflexiva
+Si falta un solo 1 en la diagonal, ya no es reflexiva.
+
+## 9. Propiedad irreflexiva
 
 Una relacion es irreflexiva cuando ningun elemento se relaciona consigo mismo.
 
-En matriz, toda la diagonal principal debe valer 0.
+Eso significa que no pueden existir pares como:
+
+- (1, 1)
+- (2, 2)
+- (3, 3)
+
+En la matriz, toda la diagonal principal debe tener 0.
 
 Ejemplo de diagonal irreflexiva:
 
-0, 0, 0
+0, 0, 0, 0
 
-## 6.3 Simetrica
+Si aparece un 1 en la diagonal, ya no es irreflexiva.
 
-Una relacion es simetrica cuando todo par tiene su par inverso.
+## 10. Propiedad simetrica
+
+Una relacion es simetrica cuando cada par tiene su par de regreso.
 
 Si existe (1, 3), tambien debe existir (3, 1).
 
-En matriz, el valor de la fila 1 columna 3 debe coincidir con el valor de la fila 3 columna 1.
+Si existe (2, 4), tambien debe existir (4, 2).
 
-## 6.4 Asimetrica
+En la matriz, esto significa que la posicion fila 1 columna 3 debe coincidir con la posicion fila 3 columna 1.
 
-Una relacion es asimetrica cuando no existen pares opuestos al mismo tiempo.
+La matriz debe verse igual al compararla con su reflejo sobre la diagonal principal.
 
-Si existe (1, 3), no puede existir (3, 1).
+Si hay ida pero no hay vuelta, no es simetrica.
 
-Ademas, no puede tener lazos.
+## 11. Propiedad asimetrica
 
-Un lazo es un par como (1, 1), (2, 2) o (3, 3).
+Una relacion es asimetrica cuando no permite ida y vuelta entre dos elementos.
 
-## 6.5 Antisimetrica
+Si existe (1, 3), entonces no puede existir (3, 1).
 
-Una relacion es antisimetrica cuando dos elementos diferentes no se relacionan en ambos sentidos al mismo tiempo.
+Ademas, una relacion asimetrica no puede tener lazos.
 
-Si existe (1, 3) y tambien existe (3, 1), entonces no cumple.
+Un lazo es un par donde el origen y el destino son el mismo elemento.
 
-Los lazos si se permiten.
+Ejemplos de lazos:
 
-Por eso antisimetrica no es lo mismo que asimetrica.
+- (1, 1)
+- (2, 2)
+- (3, 3)
 
-## 6.6 Transitiva
+Entonces, para que sea asimetrica:
 
-Una relacion es transitiva cuando un camino de dos pasos obliga a tener el paso directo.
+- La diagonal debe tener 0.
+- No puede haber pares opuestos al mismo tiempo.
 
-Si existe (1, 2) y existe (2, 3), entonces debe existir (1, 3).
+## 12. Propiedad antisimetrica
+
+Una relacion es antisimetrica cuando dos elementos diferentes no se relacionan en ambos sentidos.
+
+Si existe (1, 3), no deberia existir (3, 1).
+
+Pero los lazos si se permiten.
+
+Esta es la diferencia importante:
+
+- Asimetrica no permite lazos.
+- Antisimetrica si permite lazos.
+
+Por eso una matriz identidad puede ser antisimetrica, porque tiene lazos, pero no tiene ida y vuelta entre elementos diferentes.
+
+## 13. Propiedad transitiva
+
+Una relacion es transitiva cuando todo camino de dos pasos tiene tambien el camino directo.
+
+Si existe:
+
+- (1, 2)
+- (2, 3)
+
+Entonces debe existir:
+
+- (1, 3)
 
 Si falta (1, 3), la relacion no es transitiva.
 
-## 7. Equivalencia y ordenes
+En palabras sencillas:
 
-## 7.1 Equivalencia
+Si puedo ir de 1 a 2 y de 2 a 3, entonces tambien debo poder ir directo de 1 a 3.
 
-Una relacion es equivalencia si cumple estas tres propiedades:
+## 14. Equivalencia
+
+Una relacion es de equivalencia cuando cumple tres propiedades al mismo tiempo:
 
 - Reflexiva.
 - Simetrica.
 - Transitiva.
 
-## 7.2 Orden parcial
+No se calcula como una propiedad separada desde cero.
 
-Una relacion es orden parcial si cumple:
+La aplicacion primero calcula reflexiva, simetrica y transitiva.
+
+Despues revisa si las tres se cumplen.
+
+Si las tres son verdaderas, entonces es equivalencia.
+
+## 15. Orden parcial
+
+Una relacion es orden parcial cuando cumple:
 
 - Reflexiva.
 - Antisimetrica.
 - Transitiva.
 
-## 7.3 Orden total
+Orden parcial sirve para relaciones donde algunos elementos se pueden comparar y otros no necesariamente.
 
-Una relacion es orden total si primero es orden parcial.
+Ejemplo comun: divisibilidad.
 
-Ademas, todo par de elementos diferentes debe poder compararse.
+En divisibilidad, 2 divide a 4 y 2 divide a 6, pero 4 y 6 no se dividen entre si.
+
+Por eso puede ser orden parcial sin ser orden total.
+
+## 16. Orden total
+
+Una relacion es orden total cuando cumple dos condiciones.
+
+Primero, debe ser orden parcial.
+
+Eso significa que debe ser:
+
+- Reflexiva.
+- Antisimetrica.
+- Transitiva.
+
+Segundo, todo par de elementos distintos debe poder compararse.
 
 Comparar significa que entre dos elementos debe existir al menos una direccion.
 
-Por ejemplo, entre 2 y 5 debe existir (2, 5) o (5, 2).
+Por ejemplo, entre 2 y 5 debe pasar una de estas dos cosas:
 
-## 7.4 Orden estricto
+- (2, 5)
+- (5, 2)
 
-Una relacion es orden estricto si cumple:
+Si hay dos elementos diferentes sin ninguna relacion entre ellos, no es orden total.
+
+## 17. Orden estricto
+
+Una relacion es orden estricto cuando cumple:
 
 - Irreflexiva.
 - Asimetrica.
 - Transitiva.
 
-No permite lazos.
+Orden estricto no permite que un elemento se relacione consigo mismo.
 
-No permite ida y vuelta entre dos elementos.
+Tampoco permite ida y vuelta.
 
-## 8. Ejemplos generados
+Ejemplo: la relacion menor que.
 
-El menu de ejemplos crea matrices validas para probar resultados rapidamente.
+Si 1 es menor que 3, entonces existe (1, 3).
 
-Ejemplos disponibles:
+Pero no existe (3, 1).
+
+Tampoco existe (1, 1), porque 1 no es menor que si mismo.
+
+## 18. Ejemplos automaticos
+
+La aplicacion incluye ejemplos para generar matrices rapidamente.
+
+Cada opcion crea una matriz que sirve para revisar una propiedad u orden.
+
+Opciones disponibles:
 
 - Reflexiva.
 - Irreflexiva.
@@ -200,82 +339,82 @@ Ejemplos disponibles:
 - Orden total.
 - Orden estricto.
 
-Cada ejemplo se analiza igual que una matriz ingresada manualmente.
+Estos ejemplos no son otra forma de calculo.
 
-## 9. Grafo dirigido
+Simplemente llenan la matriz con un caso valido para que el usuario pueda observar el resultado.
 
-El grafo se genera directamente desde MR.
+## 19. Grafo dirigido
 
-Cada elemento del conjunto se convierte en un nodo.
+El grafo dirigido es una forma visual de representar la relacion R.
 
-Cada 1 de la matriz se convierte en una flecha.
+Cada elemento se convierte en un nodo.
 
-La fila indica desde donde sale la flecha.
+Cada par de R se convierte en una flecha.
 
-La columna indica hacia donde llega la flecha.
+Si existe (1, 3), se dibuja una flecha desde 1 hacia 3.
 
-Si el 1 esta en la diagonal, se dibuja un lazo.
+Si existe (2, 2), se dibuja un lazo en el nodo 2.
 
-Ejemplo:
+El grafo usa exactamente la misma informacion de la matriz MR.
 
-Si MR en fila 2 y columna 4 vale 1, se crea una flecha desde 2 hacia 4.
+No se inventan flechas.
 
-## 10. Tecnologias y librerias usadas
+No se eliminan flechas.
 
-La aplicacion usa varias tecnologias sencillas, cada una con una responsabilidad diferente.
+Todo 1 de la matriz produce una flecha.
 
-Python se usa para la parte del servidor y para los calculos matematicos.
+## 20. Como se dibuja el grafo
 
-Flask se usa para crear la aplicacion web local. Tambien se usa para recibir la matriz desde la pantalla y devolver los resultados en formato JSON.
+El servidor prepara los datos del grafo.
 
-HTML se usa para construir la estructura de la pantalla: botones, cuadros, secciones, textarea y contenedores de resultados.
+Primero crea los nodos:
 
-CSS se usa para la parte visual: colores, distribucion de paneles, tarjetas, matriz, scroll interno y tamanos.
+- 1
+- 2
+- 3
+- Hasta n
 
-JavaScript se usa para la interaccion del usuario. Con JavaScript se crean las celdas de la matriz, se cambia cada casilla entre 0 y 1, se envia la matriz al servidor y se actualizan los resultados en pantalla.
+Luego crea las aristas.
 
-Bootstrap se usa como apoyo visual para botones, formularios y estilos base. Esta incluido dentro del proyecto como archivo local.
+Una arista es una flecha.
 
-Cytoscape.js se usa para dibujar el grafo dirigido. Esta libreria recibe nodos y flechas, y los pinta dentro del navegador.
+Por cada 1 en la matriz, se crea una arista desde la fila hacia la columna.
 
-## 11. Como se grafica el grafo
+Despues, JavaScript entrega esos nodos y aristas a Cytoscape.js.
 
-El grafo se prepara en Python y se dibuja en JavaScript.
+Cytoscape.js es la libreria que dibuja el grafo en el navegador.
 
-Primero, Python revisa la matriz MR.
+## 21. Tecnologias y librerias usadas
 
-Por cada elemento 1, crea una arista.
+Python se usa para la logica del servidor y para los calculos matematicos.
 
-La fila se toma como origen.
+Flask se usa para crear la aplicacion web local y las rutas que reciben y devuelven datos.
 
-La columna se toma como destino.
+HTML se usa para la estructura de la pantalla.
 
-Tambien crea un nodo por cada elemento numerado de 1 hasta n.
+CSS se usa para colores, paneles, botones, matriz, tarjetas y distribucion visual.
 
-Luego la pantalla recibe dos listas:
+JavaScript se usa para la interaccion con el usuario.
 
-- Lista de nodos.
-- Lista de aristas.
+Con JavaScript se cambian las celdas entre 0 y 1, se manda la matriz al servidor y se actualizan los resultados.
 
-JavaScript entrega esas listas a Cytoscape.js.
+Bootstrap se usa como apoyo visual para botones, formularios y estilos base.
 
-Cytoscape.js se encarga de pintar el grafo dirigido en pantalla.
+Cytoscape.js se usa para graficar el grafo dirigido.
 
-Si una arista sale y llega al mismo nodo, se ve como un lazo.
-
-## 12. Archivos principales
+## 22. Archivos principales
 
 app.py inicia la aplicacion.
 
-routes.py define las rutas web y las rutas de la API.
+routes.py contiene las rutas web y las rutas de la API.
 
-validation.py valida entradas.
+validation.py valida las entradas.
 
 relation_analyzer.py calcula propiedades, equivalencia y ordenes.
 
-generators.py crea matrices aleatorias.
+generators.py genera matrices aleatorias.
 
-graph_builder.py prepara los datos del grafo dirigido.
+graph_builder.py convierte la matriz en nodos y flechas.
 
 index.html contiene la pantalla principal.
 
@@ -283,11 +422,11 @@ app.js controla la interaccion de la pantalla.
 
 styles.css contiene los estilos visuales.
 
-## 13. Flujo de funcionamiento
+## 23. Flujo completo
 
 1. El usuario define n.
-2. La aplicacion crea una matriz n por n.
-3. El usuario llena la matriz o genera una matriz automaticamente.
+2. La aplicacion crea la matriz.
+3. El usuario llena o genera la matriz.
 4. La matriz se valida.
 5. Se obtiene R.
 6. Se calculan las propiedades.
@@ -295,7 +434,7 @@ styles.css contiene los estilos visuales.
 8. Se construye el grafo dirigido.
 9. Se muestran los resultados.
 
-## 14. Salidas de la aplicacion
+## 24. Salidas de la aplicacion
 
 La aplicacion muestra:
 
@@ -306,16 +445,14 @@ La aplicacion muestra:
 - Equivalencia y ordenes con su estado.
 - El grafo dirigido.
 
-## 15. Resumen
+## 25. Resumen final
 
-La aplicacion permite trabajar con relaciones binarias de forma visual.
+Todo parte de una sola matriz MR.
 
-El usuario ingresa o genera una sola matriz MR.
+Los 1 de la matriz crean la relacion R.
 
-Desde esa matriz se obtiene todo lo demas:
+La relacion R permite revisar propiedades.
 
-- R.
-- Propiedades.
-- Equivalencia.
-- Ordenes.
-- Grafo dirigido.
+Las propiedades permiten saber si hay equivalencia u ordenes.
+
+La misma matriz tambien permite construir el grafo dirigido.

@@ -184,7 +184,7 @@ function sincronizarCamposDeEntrada() {
   buscarElemento("#sizeInput").value = estadoAplicacion.matriz.length;
 
   // Actualiza el texto de tamano.
-  buscarElemento("#matrixMeta").textContent = `${estadoAplicacion.matriz.length} x ${estadoAplicacion.matriz.length}, binaria y cuadrada`;
+  buscarElemento("#matrixMeta").textContent = `${estadoAplicacion.matriz.length} x ${estadoAplicacion.matriz.length}`;
 
   // Actualiza el origen de la matriz.
   buscarElemento("#currentInputSummary").textContent = `${estadoAplicacion.origenMatriz}. Filas y columnas: ${estadoAplicacion.etiquetas.join(", ")}`;
