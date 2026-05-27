@@ -220,7 +220,50 @@ Ejemplo:
 
 Si MR en fila 2 y columna 4 vale 1, se crea una flecha desde 2 hacia 4.
 
-## 10. Archivos principales
+## 10. Tecnologias y librerias usadas
+
+La aplicacion usa varias tecnologias sencillas, cada una con una responsabilidad diferente.
+
+Python se usa para la parte del servidor y para los calculos matematicos.
+
+Flask se usa para crear la aplicacion web local. Tambien se usa para recibir la matriz desde la pantalla y devolver los resultados en formato JSON.
+
+HTML se usa para construir la estructura de la pantalla: botones, cuadros, secciones, textarea y contenedores de resultados.
+
+CSS se usa para la parte visual: colores, distribucion de paneles, tarjetas, matriz, scroll interno y tamanos.
+
+JavaScript se usa para la interaccion del usuario. Con JavaScript se crean las celdas de la matriz, se cambia cada casilla entre 0 y 1, se envia la matriz al servidor y se actualizan los resultados en pantalla.
+
+Bootstrap se usa como apoyo visual para botones, formularios y estilos base. Esta incluido dentro del proyecto como archivo local.
+
+Cytoscape.js se usa para dibujar el grafo dirigido. Esta libreria recibe nodos y flechas, y los pinta dentro del navegador.
+
+## 11. Como se grafica el grafo
+
+El grafo se prepara en Python y se dibuja en JavaScript.
+
+Primero, Python revisa la matriz MR.
+
+Por cada elemento 1, crea una arista.
+
+La fila se toma como origen.
+
+La columna se toma como destino.
+
+Tambien crea un nodo por cada elemento numerado de 1 hasta n.
+
+Luego la pantalla recibe dos listas:
+
+- Lista de nodos.
+- Lista de aristas.
+
+JavaScript entrega esas listas a Cytoscape.js.
+
+Cytoscape.js se encarga de pintar el grafo dirigido en pantalla.
+
+Si una arista sale y llega al mismo nodo, se ve como un lazo.
+
+## 12. Archivos principales
 
 app.py inicia la aplicacion.
 
@@ -240,7 +283,7 @@ app.js controla la interaccion de la pantalla.
 
 styles.css contiene los estilos visuales.
 
-## 11. Flujo de funcionamiento
+## 13. Flujo de funcionamiento
 
 1. El usuario define n.
 2. La aplicacion crea una matriz n por n.
@@ -252,7 +295,7 @@ styles.css contiene los estilos visuales.
 8. Se construye el grafo dirigido.
 9. Se muestran los resultados.
 
-## 12. Salidas de la aplicacion
+## 14. Salidas de la aplicacion
 
 La aplicacion muestra:
 
@@ -263,7 +306,7 @@ La aplicacion muestra:
 - Equivalencia y ordenes con su estado.
 - El grafo dirigido.
 
-## 13. Resumen
+## 15. Resumen
 
 La aplicacion permite trabajar con relaciones binarias de forma visual.
 

@@ -12,6 +12,16 @@ Despues de iniciar la aplicacion, abra esta direccion en el navegador:
 
 http://127.0.0.1:5000
 
+## Tecnologias y librerias usadas
+
+- Python: lenguaje usado para la logica del servidor.
+- Flask: framework usado para crear la aplicacion web local y las rutas de la API.
+- HTML: estructura de las pantallas.
+- CSS: estilos visuales, distribucion de paneles, colores y scroll de la matriz.
+- JavaScript: interaccion de la pantalla, cambio de celdas, envio de datos al servidor y dibujo del grafo.
+- Bootstrap: estilos base para botones, formularios y componentes visuales.
+- Cytoscape.js: libreria usada para graficar el grafo dirigido.
+
 ## Uso basico
 
 1. Escriba el tamano n de la matriz.
